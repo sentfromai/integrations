@@ -86,7 +86,7 @@ Examples contain no credentials and the supplied workflow files do not send emai
 
 ## Compatibility and limits
 
-The package compiles against n8n-workflow 1.82.0 and uses n8n's standard credential and authenticated HTTP helpers. The main node is usable as an AI tool. The trigger is a workflow entry point, not an AI tool. Actual n8n UI and account smoke testing is still required before a public verification application; the automated suite uses mocked HTTP and does not send live email.
+The package compiles against n8n-workflow 1.82.0 and uses n8n's standard credential and authenticated HTTP helpers. The main node is usable as an AI tool. The trigger is a workflow entry point, not an AI tool. The connector has also passed a live smoke test through the official n8n-core WorkflowExecute engine against an isolated SentFromAI account: inbox listing, send, expression-linked read, send deduplication, search, reply, and inbound delivery. Full n8n server/UI activation and an end-to-end live webhook-trigger test remain outstanding. The unit suite uses mocked HTTP and does not send live email.
 
 This initial version does not upload attachments, forward messages, delete inboxes, or expose draft management. Reading a message returns its attachment download links. Webhooks are the supported route for reacting to every new message; search is not an unlimited polling feed.
 

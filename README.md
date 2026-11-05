@@ -4,10 +4,10 @@ Connect [SentFromAI](https://sentfrom.ai) email inboxes to automation platforms 
 
 | Platform | Source | Included capabilities | Release status |
 | --- | --- | --- | --- |
-| n8n | [n8n/](n8n/) | Inbox operations, send/reply/read/search, signed email-event webhook trigger | Package built and locally tested; npm publication, live workflow testing and community-node verification pending |
-| Zapier | [zapier/](zapier/) | Instant inbound-email trigger, inbox trigger, email actions and search | Local tests/schema checks and build pass; authenticated upload, live test Zaps and directory review pending |
+| n8n | [n8n/](n8n/) | Inbox operations, send/reply/read/search, signed email-event webhook trigger | Package built and locally tested; live API workflows pass through the n8n engine; npm publication, server/UI testing and community-node verification pending |
+| Zapier | [zapier/](zapier/) | Instant inbound-email trigger, inbox trigger, email actions and search | Local tests/schema checks and live API smoke tests through the Zapier runtime pass; authenticated upload, hosted test Zaps and directory review pending |
 | Make | [make/](make/) | Custom-app connection and eight modules for inboxes and email | Source and API-contract checks complete; installation, Make runtime tests and review pending |
-| Nango | [nango/](nango/) | API-key provider configuration and connection documentation | Provider schema checks complete; live Nango connection test and upstream review pending |
+| Nango | [nango/](nango/) | API-key provider configuration and connection documentation | Provider schema and live API-key checks pass; [draft upstream PR](https://github.com/NangoHQ/nango/pull/8204) submitted; full Nango connection test and review pending |
 
 These packages are under development. A successful local build is not marketplace verification. Each platform directory documents its installation steps, remaining live tests and limitations.
 

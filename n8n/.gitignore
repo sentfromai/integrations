@@ -5,3 +5,5 @@ dist/
 .tooling/
 tsconfig.local.json
 .DS_Store
+
+.smoke-runtime/

@@ -1,6 +1,19 @@
 # SentFromAI provider contribution for Nango
 
-Prepared provider configuration, connection instructions, and upstream file overlay. This is an authentication/proxy provider, not a bundle of prebuilt syncs/actions. No upstream PR or API listing has been created by these files alone.
+Provider configuration, connection instructions, and upstream file overlay. This is an authentication/proxy provider, not a bundle of prebuilt syncs/actions.
+
+## Submission status
+
+[Upstream draft PR #8204](https://github.com/NangoHQ/nango/pull/8204) is open. The provider is awaiting upstream review and is not yet an approved Nango listing.
+
+Validated on 5 November 2026:
+
+- Nango's authoritative provider validator passes.
+- Generated documentation indexes are updated; the complete Mintlify scan reports `success no broken links found`.
+- The provider configuration's live `GET /inboxes` check returns **200** with an active, isolated test-account key. A deliberately invalid key returns **401**. No email sends were used for these checks.
+- New MDX files pass Prettier, and the contribution passes `git diff --check`.
+
+The full Nango server/dashboard connection flow remains untested, so the PR remains a draft. The live check verifies the configured base URL, Bearer header, and verification endpoint directly.
 
 ## Contents
 
@@ -39,7 +52,7 @@ The official contribution process calls for a real connection test. Start Nango 
 
 The supplied configuration deliberately does not enforce a key prefix: active keys created under the older service name remain valid. A successful read-only credential check does not mean the account is permitted to send; account status, claim requirements, plan limits, and suppression rules still apply.
 
-Once live validation passes, open an upstream pull request, describing the actual tests performed. Suggested title: `feat(integrations): add SentFromAI API-key provider`. Do not claim end-to-end validation before running it.
+After the full connection flow passes, update the existing draft PR with the actual validation evidence and make it ready for review. Do not open a duplicate PR or claim end-to-end validation before running it.
 
 ## Provenance
 
