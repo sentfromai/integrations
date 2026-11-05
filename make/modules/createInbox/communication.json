@@ -1,0 +1,13 @@
+{
+  "url": "/inboxes",
+  "method": "POST",
+  "type": "json",
+  "body": {
+    "local_part": "{{parameters.local_part}}",
+    "display_name": "{{parameters.display_name}}",
+    "domain_id": "{{parameters.domain_id}}"
+  },
+  "response": {
+    "output": "{{body}}"
+  }
+}

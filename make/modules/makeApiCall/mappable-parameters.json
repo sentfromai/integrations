@@ -1,0 +1,66 @@
+[
+  {
+    "name": "path",
+    "label": "API path",
+    "type": "text",
+    "required": true,
+    "validate": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_./%~-]*$"
+    },
+    "help": "Path relative to /v1/, for example inboxes or messages. Host is fixed to api.sentfrom.ai."
+  },
+  {
+    "name": "method",
+    "label": "Method",
+    "type": "select",
+    "required": true,
+    "default": "GET",
+    "options": [
+      {
+        "label": "GET",
+        "value": "GET"
+      },
+      {
+        "label": "POST",
+        "value": "POST"
+      },
+      {
+        "label": "PUT",
+        "value": "PUT"
+      },
+      {
+        "label": "PATCH",
+        "value": "PATCH"
+      },
+      {
+        "label": "DELETE",
+        "value": "DELETE"
+      }
+    ]
+  },
+  {
+    "name": "query",
+    "label": "Query string",
+    "type": "array",
+    "spec": [
+      {
+        "name": "key",
+        "label": "Key",
+        "type": "text",
+        "required": true
+      },
+      {
+        "name": "value",
+        "label": "Value",
+        "type": "text",
+        "required": true
+      }
+    ]
+  },
+  {
+    "name": "body",
+    "label": "JSON body",
+    "type": "json",
+    "help": "Optional valid JSON body. Leave empty for GET/DELETE requests."
+  }
+]

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tgz
+.npm-cache/
+.tooling/
+tsconfig.local.json
+.DS_Store

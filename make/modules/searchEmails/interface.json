@@ -1,0 +1,50 @@
+[
+  {
+    "name": "id",
+    "label": "Message ID",
+    "type": "text"
+  },
+  {
+    "name": "thread_id",
+    "label": "Thread ID",
+    "type": "text"
+  },
+  {
+    "name": "direction",
+    "label": "Direction",
+    "type": "text"
+  },
+  {
+    "name": "from_addr",
+    "label": "From",
+    "type": "email"
+  },
+  {
+    "name": "to_addrs",
+    "label": "To",
+    "type": "array",
+    "spec": {
+      "type": "email"
+    }
+  },
+  {
+    "name": "subject",
+    "label": "Subject",
+    "type": "text"
+  },
+  {
+    "name": "created_at",
+    "label": "Created at",
+    "type": "date"
+  },
+  {
+    "name": "sent_at",
+    "label": "Sent at",
+    "type": "date"
+  },
+  {
+    "name": "received_at",
+    "label": "Received at",
+    "type": "date"
+  }
+]

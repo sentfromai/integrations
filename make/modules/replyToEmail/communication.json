@@ -1,0 +1,13 @@
+{
+  "url": "/messages/{{encodeURL(parameters.message_id)}}/reply",
+  "method": "POST",
+  "type": "json",
+  "body": {
+    "text": "{{parameters.text}}",
+    "html": "{{parameters.html}}",
+    "reply_all": "{{parameters.reply_all}}"
+  },
+  "response": {
+    "output": "{{body}}"
+  }
+}

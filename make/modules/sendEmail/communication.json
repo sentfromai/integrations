@@ -1,0 +1,18 @@
+{
+  "url": "/messages",
+  "method": "POST",
+  "type": "json",
+  "body": {
+    "inbox_id": "{{parameters.inbox_id}}",
+    "to": "{{parameters.to}}",
+    "subject": "{{parameters.subject}}",
+    "text": "{{parameters.text}}",
+    "html": "{{parameters.html}}",
+    "cc": "{{parameters.cc}}",
+    "bcc": "{{parameters.bcc}}",
+    "client_id": "{{parameters.client_id}}"
+  },
+  "response": {
+    "output": "{{body}}"
+  }
+}

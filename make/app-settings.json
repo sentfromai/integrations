@@ -1,0 +1,9 @@
+{
+  "name": "sentfromai",
+  "label": "SentFromAI",
+  "version": 1,
+  "description": "Create agent inboxes, send and reply to email, and read or search messages with SentFromAI.",
+  "website": "https://sentfrom.ai",
+  "support": "support@sentfrom.ai",
+  "note": "Editor setup manifest, not a Make-generated export. See README.md."
+}

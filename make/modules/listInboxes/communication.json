@@ -1,0 +1,9 @@
+{
+  "url": "/inboxes",
+  "method": "GET",
+  "response": {
+    "iterate": "{{body.inboxes}}",
+    "output": "{{item}}",
+    "limit": "{{parameters.limit}}"
+  }
+}

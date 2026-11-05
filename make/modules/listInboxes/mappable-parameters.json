@@ -1,0 +1,14 @@
+[
+  {
+    "name": "limit",
+    "label": "Limit",
+    "type": "uinteger",
+    "required": true,
+    "default": 100,
+    "validate": {
+      "min": 1,
+      "max": 100
+    },
+    "help": "Maximum output bundles per execution, up to 100."
+  }
+]

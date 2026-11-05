@@ -1,0 +1,20 @@
+[
+  {
+    "name": "local_part",
+    "label": "Local part",
+    "type": "text",
+    "required": true,
+    "help": "Lowercase letters, digits, dots, underscores and hyphens. Reserved shared-domain addresses are rejected."
+  },
+  {
+    "name": "display_name",
+    "label": "Display name",
+    "type": "text"
+  },
+  {
+    "name": "domain_id",
+    "label": "Verified domain ID",
+    "type": "text",
+    "help": "Leave empty for the managed mail.sentfrom.ai domain."
+  }
+]

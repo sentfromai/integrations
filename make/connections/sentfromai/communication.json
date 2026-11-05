@@ -1,0 +1,26 @@
+{
+  "url": "https://api.sentfrom.ai/v1/inboxes",
+  "method": "GET",
+  "headers": {
+    "authorization": "Bearer {{parameters.apiKey}}"
+  },
+  "response": {
+    "valid": "{{statusCode === 200}}",
+    "error": {
+      "message": "[{{statusCode}}] {{ifempty(body.message, body.error)}}"
+    },
+    "data": {
+      "apiKey": "{{parameters.apiKey}}"
+    },
+    "metadata": {
+      "type": "text",
+      "value": "SentFromAI"
+    }
+  },
+  "log": {
+    "sanitize": [
+      "request.headers.authorization",
+      "response.data.apiKey"
+    ]
+  }
+}

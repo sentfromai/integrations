@@ -1,0 +1,58 @@
+[
+  {
+    "name": "createInbox",
+    "label": "Create an Inbox",
+    "type": "action",
+    "description": "Creates an inbox on the managed domain or a verified custom domain.",
+    "connection": "sentfromai"
+  },
+  {
+    "name": "listInboxes",
+    "label": "List Inboxes",
+    "type": "search",
+    "description": "Lists the inboxes belonging to the connected account.",
+    "connection": "sentfromai"
+  },
+  {
+    "name": "sendEmail",
+    "label": "Send an Email",
+    "type": "action",
+    "description": "Sends an email from a SentFromAI inbox.",
+    "connection": "sentfromai"
+  },
+  {
+    "name": "replyToEmail",
+    "label": "Reply to an Email",
+    "type": "action",
+    "description": "Replies in the original thread; SentFromAI derives recipients and threading headers.",
+    "connection": "sentfromai"
+  },
+  {
+    "name": "getEmail",
+    "label": "Get an Email",
+    "type": "action",
+    "description": "Retrieves a message with body, labels, and signed attachment URLs.",
+    "connection": "sentfromai"
+  },
+  {
+    "name": "searchEmails",
+    "label": "Search Emails",
+    "type": "search",
+    "description": "Searches up to 100 messages; each matching message becomes a bundle.",
+    "connection": "sentfromai"
+  },
+  {
+    "name": "watchReceivedEmails",
+    "label": "Watch Received Emails",
+    "type": "trigger",
+    "description": "Polls the latest 100 messages for incoming email. Schedule frequently enough to stay within that window.",
+    "connection": "sentfromai"
+  },
+  {
+    "name": "makeApiCall",
+    "label": "Make an API Call",
+    "type": "universal",
+    "description": "Makes an authenticated request to the SentFromAI API.",
+    "connection": "sentfromai"
+  }
+]

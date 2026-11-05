@@ -1,0 +1,14 @@
+{
+  "url": "/{{parameters.path}}",
+  "method": "{{parameters.method}}",
+  "qs": "{{toCollection(parameters.query, 'key', 'value')}}",
+  "body": "{{parameters.body}}",
+  "type": "raw",
+  "response": {
+    "output": {
+      "body": "{{body}}",
+      "headers": "{{headers}}",
+      "statusCode": "{{statusCode}}"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "sentfromai-zapier",
+  "version": "1.0.0",
+  "description": "SentFromAI email inboxes, messages and drafts for Zapier.",
+  "main": "index.js",
+  "private": true,
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "validate": "zapier-platform validate --without-style",
+    "validate:remote": "zapier-platform validate",
+    "build": "zapier-platform build --skip-dep-install --skip-validation"
+  },
+  "dependencies": { "zapier-platform-core": "19.3.0" },
+  "devDependencies": { "zapier-platform-cli": "19.3.0", "nock": "14.0.10" }
+}

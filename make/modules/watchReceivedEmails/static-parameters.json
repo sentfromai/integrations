@@ -1,0 +1,27 @@
+[
+  {
+    "name": "__IMTCONN__",
+    "label": "Connection",
+    "type": "account:sentfromai",
+    "required": true
+  },
+  {
+    "name": "inbox_id",
+    "label": "Inbox ID",
+    "type": "text",
+    "required": true,
+    "help": "Watches this inbox. Only the newest 100 inbound AND outbound messages are returned by the API per poll. More than 100 new messages between polls may be missed. This is not a historical backfill."
+  },
+  {
+    "name": "limit",
+    "label": "Limit",
+    "type": "uinteger",
+    "required": true,
+    "default": 100,
+    "validate": {
+      "min": 1,
+      "max": 100
+    },
+    "help": "Maximum output bundles per execution, up to 100."
+  }
+]

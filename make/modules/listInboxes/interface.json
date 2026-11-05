@@ -1,0 +1,22 @@
+[
+  {
+    "name": "id",
+    "label": "Inbox ID",
+    "type": "text"
+  },
+  {
+    "name": "local_part",
+    "label": "Local part",
+    "type": "text"
+  },
+  {
+    "name": "display_name",
+    "label": "Display name",
+    "type": "text"
+  },
+  {
+    "name": "address",
+    "label": "Email address",
+    "type": "email"
+  }
+]

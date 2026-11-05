@@ -1,0 +1,22 @@
+[
+  {
+    "name": "id",
+    "label": "Message ID",
+    "type": "text"
+  },
+  {
+    "name": "thread_id",
+    "label": "Thread ID",
+    "type": "text"
+  },
+  {
+    "name": "message_id",
+    "label": "Email Message-ID",
+    "type": "text"
+  },
+  {
+    "name": "ses_message_id",
+    "label": "Delivery provider message ID",
+    "type": "text"
+  }
+]

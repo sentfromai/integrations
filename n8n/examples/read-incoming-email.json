@@ -1,0 +1,32 @@
+{
+  "name": "SentFromAI — Read incoming email",
+  "active": false,
+  "nodes": [
+    {
+      "id": "incoming",
+      "name": "Incoming email",
+      "type": "n8n-nodes-sentfromai.sentFromAiTrigger",
+      "typeVersion": 1,
+      "position": [260, 300],
+      "parameters": { "events": ["message.received"] }
+    },
+    {
+      "id": "read",
+      "name": "Read full message",
+      "type": "n8n-nodes-sentfromai.sentFromAi",
+      "typeVersion": 1,
+      "position": [520, 300],
+      "parameters": {
+        "resource": "message",
+        "operation": "get",
+        "messageId": "={{ $json.message.id }}"
+      }
+    }
+  ],
+  "connections": {
+    "Incoming email": {
+      "main": [[{ "node": "Read full message", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}

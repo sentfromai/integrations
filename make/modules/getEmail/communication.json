@@ -1,0 +1,21 @@
+{
+  "url": "/messages/{{encodeURL(parameters.message_id)}}",
+  "method": "GET",
+  "response": {
+    "output": {
+      "id": "{{body.id}}",
+      "thread_id": "{{body.thread_id}}",
+      "direction": "{{body.direction}}",
+      "from_addr": "{{body.from_addr}}",
+      "to_addrs": "{{body.to_addrs}}",
+      "subject": "{{body.subject}}",
+      "created_at": "{{if(body.created_at, parseDate(body.created_at, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), null)}}",
+      "sent_at": "{{if(body.sent_at, parseDate(body.sent_at, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), null)}}",
+      "received_at": "{{if(body.received_at, parseDate(body.received_at, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), null)}}",
+      "body_text": "{{body.body_text}}",
+      "body_html": "{{body.body_html}}",
+      "attachments": "{{body.attachments}}",
+      "labels": "{{body.labels}}"
+    }
+  }
+}

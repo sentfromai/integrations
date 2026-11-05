@@ -1,0 +1,8 @@
+[
+  {
+    "name": "__IMTCONN__",
+    "label": "Connection",
+    "type": "account:sentfromai",
+    "required": true
+  }
+]

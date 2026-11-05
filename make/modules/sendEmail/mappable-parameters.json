@@ -1,0 +1,58 @@
+[
+  {
+    "name": "inbox_id",
+    "label": "Inbox ID",
+    "type": "text",
+    "required": true
+  },
+  {
+    "name": "to",
+    "label": "To",
+    "type": "array",
+    "required": true,
+    "spec": {
+      "type": "email"
+    }
+  },
+  {
+    "name": "subject",
+    "label": "Subject",
+    "type": "text",
+    "required": true
+  },
+  {
+    "name": "text",
+    "label": "Plain-text body",
+    "type": "text",
+    "required": true,
+    "multiline": true
+  },
+  {
+    "name": "html",
+    "label": "HTML body",
+    "type": "text",
+    "multiline": true
+  },
+  {
+    "name": "cc",
+    "label": "Cc",
+    "type": "array",
+    "spec": {
+      "type": "email"
+    }
+  },
+  {
+    "name": "bcc",
+    "label": "Bcc",
+    "type": "array",
+    "spec": {
+      "type": "email"
+    }
+  },
+  {
+    "name": "client_id",
+    "label": "Idempotency key",
+    "type": "text",
+    "help": "Optional. Use a stable, unique ID for this logical send. Reuse it only when retrying that same send."
+  }
+]

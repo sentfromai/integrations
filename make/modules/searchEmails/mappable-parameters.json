@@ -1,0 +1,46 @@
+[
+  {
+    "name": "query",
+    "label": "Query",
+    "type": "text",
+    "help": "Leave empty for recent messages."
+  },
+  {
+    "name": "inbox_id",
+    "label": "Inbox ID",
+    "type": "text",
+    "help": "Optional inbox filter."
+  },
+  {
+    "name": "mode",
+    "label": "Search mode",
+    "type": "select",
+    "default": "keyword",
+    "options": [
+      {
+        "label": "Keyword",
+        "value": "keyword"
+      },
+      {
+        "label": "Semantic",
+        "value": "semantic"
+      },
+      {
+        "label": "Hybrid",
+        "value": "hybrid"
+      }
+    ],
+    "help": "Semantic and hybrid search require a supported plan. The API may fall back to keyword."
+  },
+  {
+    "name": "limit",
+    "label": "Limit",
+    "type": "uinteger",
+    "default": 25,
+    "required": true,
+    "validate": {
+      "min": 1,
+      "max": 100
+    }
+  }
+]

@@ -1,0 +1,65 @@
+{
+  "name": "n8n-nodes-sentfromai",
+  "version": "0.1.0",
+  "description": "SentFromAI email inboxes, messages and signed webhook events for n8n workflows and AI agents",
+  "license": "MIT",
+  "homepage": "https://sentfrom.ai",
+  "keywords": [
+    "n8n-community-node-package",
+    "sentfromai",
+    "email",
+    "ai-agents",
+    "mcp"
+  ],
+  "author": {
+    "name": "Samuel Arregger-Robson",
+    "email": "samuel@sentfrom.ai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sentfromai/integrations.git",
+    "directory": "n8n"
+  },
+  "bugs": {
+    "url": "https://github.com/sentfromai/integrations/issues"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "build": "n8n-node build",
+    "dev": "n8n-node dev",
+    "lint": "n8n-node lint",
+    "lint:fix": "n8n-node lint --fix",
+    "test": "node --test tests/*.test.cjs",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run lint && npm test"
+  },
+  "files": [
+    "dist",
+    "examples",
+    "CHANGELOG.md"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "credentials": [
+      "dist/credentials/SentFromAiApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/SentFromAi/SentFromAi.node.js",
+      "dist/nodes/SentFromAi/SentFromAiTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "0.16.0",
+    "@types/node": "22.13.10",
+    "eslint": "9.32.0",
+    "n8n-workflow": "1.82.0",
+    "prettier": "3.6.2",
+    "typescript": "5.9.2"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}

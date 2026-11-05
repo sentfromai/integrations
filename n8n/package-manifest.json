@@ -1,0 +1,141 @@
+[
+  {
+    "id": "n8n-nodes-sentfromai@0.1.0",
+    "name": "n8n-nodes-sentfromai",
+    "version": "0.1.0",
+    "size": 16951,
+    "unpackedSize": 67100,
+    "shasum": "d7898417d23a7c603b2f6f9ecdf9ce527002453f",
+    "integrity": "sha512-t3TkIYnqWQ+z/JD298fjZ+M7+yhY0FoXuDYT3N+0pqBaJ6UOhaBeaG67SZyRjZue01Dy372BLZj32OanO1C5yw==",
+    "filename": "n8n-nodes-sentfromai-0.1.0.tgz",
+    "files": [
+      {
+        "path": "CHANGELOG.md",
+        "size": 280,
+        "mode": 420
+      },
+      {
+        "path": "LICENSE",
+        "size": 1067,
+        "mode": 420
+      },
+      {
+        "path": "README.md",
+        "size": 7475,
+        "mode": 420
+      },
+      {
+        "path": "dist/credentials/SentFromAiApi.credentials.d.ts",
+        "size": 386,
+        "mode": 420
+      },
+      {
+        "path": "dist/credentials/SentFromAiApi.credentials.js",
+        "size": 1189,
+        "mode": 420
+      },
+      {
+        "path": "dist/credentials/SentFromAiApi.credentials.js.map",
+        "size": 751,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/GenericFunctions.d.ts",
+        "size": 699,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/GenericFunctions.js",
+        "size": 1915,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/GenericFunctions.js.map",
+        "size": 2068,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/SentFromAi.node.d.ts",
+        "size": 487,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/SentFromAi.node.js",
+        "size": 17386,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/SentFromAi.node.js.map",
+        "size": 11531,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/SentFromAi.node.json",
+        "size": 329,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/sentfromai.svg",
+        "size": 397,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/SentFromAiTrigger.node.d.ts",
+        "size": 562,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/SentFromAiTrigger.node.js",
+        "size": 7376,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/SentFromAiTrigger.node.js.map",
+        "size": 5560,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/SentFromAiTrigger.node.json",
+        "size": 336,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/WebhookFunctions.d.ts",
+        "size": 312,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/WebhookFunctions.js",
+        "size": 1157,
+        "mode": 420
+      },
+      {
+        "path": "dist/nodes/SentFromAi/WebhookFunctions.js.map",
+        "size": 967,
+        "mode": 420
+      },
+      {
+        "path": "dist/package.json",
+        "size": 1767,
+        "mode": 420
+      },
+      {
+        "path": "examples/list-inboxes.json",
+        "size": 742,
+        "mode": 420
+      },
+      {
+        "path": "examples/read-incoming-email.json",
+        "size": 802,
+        "mode": 420
+      },
+      {
+        "path": "package.json",
+        "size": 1559,
+        "mode": 420
+      }
+    ],
+    "entryCount": 25,
+    "bundled": []
+  }
+]

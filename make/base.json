@@ -1,0 +1,17 @@
+{
+  "baseUrl": "https://api.sentfrom.ai/v1",
+  "headers": {
+    "authorization": "Bearer {{connection.apiKey}}",
+    "content-type": "application/json"
+  },
+  "response": {
+    "error": {
+      "message": "[{{statusCode}}] {{ifempty(body.message, body.error)}}"
+    }
+  },
+  "log": {
+    "sanitize": [
+      "request.headers.authorization"
+    ]
+  }
+}

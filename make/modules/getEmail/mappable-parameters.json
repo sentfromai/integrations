@@ -1,0 +1,9 @@
+[
+  {
+    "name": "message_id",
+    "label": "Message ID",
+    "type": "text",
+    "required": true,
+    "help": "SentFromAI message UUID, not the email Message-ID header."
+  }
+]

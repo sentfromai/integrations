@@ -1,0 +1,28 @@
+[
+  {
+    "name": "message_id",
+    "label": "Message ID",
+    "type": "text",
+    "required": true,
+    "help": "SentFromAI message UUID, not the email Message-ID header."
+  },
+  {
+    "name": "text",
+    "label": "Plain-text reply",
+    "type": "text",
+    "required": true,
+    "multiline": true
+  },
+  {
+    "name": "html",
+    "label": "HTML reply",
+    "type": "text",
+    "multiline": true
+  },
+  {
+    "name": "reply_all",
+    "label": "Reply to all",
+    "type": "boolean",
+    "default": false
+  }
+]

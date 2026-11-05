@@ -1,0 +1,32 @@
+{
+  "url": "/messages",
+  "method": "GET",
+  "qs": {
+    "inbox_id": "{{parameters.inbox_id}}",
+    "limit": 100
+  },
+  "response": {
+    "iterate": {
+      "container": "{{body.messages}}",
+      "condition": "{{item.direction === 'inbound'}}"
+    },
+    "output": {
+      "id": "{{item.id}}",
+      "thread_id": "{{item.thread_id}}",
+      "direction": "{{item.direction}}",
+      "from_addr": "{{item.from_addr}}",
+      "to_addrs": "{{item.to_addrs}}",
+      "subject": "{{item.subject}}",
+      "created_at": "{{if(item.created_at, parseDate(item.created_at, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), null)}}",
+      "sent_at": "{{if(item.sent_at, parseDate(item.sent_at, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), null)}}",
+      "received_at": "{{if(item.received_at, parseDate(item.received_at, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), null)}}"
+    },
+    "trigger": {
+      "type": "date",
+      "order": "desc",
+      "id": "{{item.id}}",
+      "date": "{{parseDate(item.created_at, 'YYYY-MM-DDTHH:mm:ss.SSSZ')}}"
+    },
+    "limit": "{{parameters.limit}}"
+  }
+}

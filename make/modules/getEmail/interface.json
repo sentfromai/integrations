@@ -1,0 +1,120 @@
+[
+  {
+    "name": "id",
+    "label": "Message ID",
+    "type": "text"
+  },
+  {
+    "name": "thread_id",
+    "label": "Thread ID",
+    "type": "text"
+  },
+  {
+    "name": "direction",
+    "label": "Direction",
+    "type": "text"
+  },
+  {
+    "name": "from_addr",
+    "label": "From",
+    "type": "email"
+  },
+  {
+    "name": "to_addrs",
+    "label": "To",
+    "type": "array",
+    "spec": {
+      "type": "email"
+    }
+  },
+  {
+    "name": "subject",
+    "label": "Subject",
+    "type": "text"
+  },
+  {
+    "name": "created_at",
+    "label": "Created at",
+    "type": "date"
+  },
+  {
+    "name": "sent_at",
+    "label": "Sent at",
+    "type": "date"
+  },
+  {
+    "name": "received_at",
+    "label": "Received at",
+    "type": "date"
+  },
+  {
+    "name": "body_text",
+    "label": "Text body",
+    "type": "text"
+  },
+  {
+    "name": "body_html",
+    "label": "HTML body",
+    "type": "text"
+  },
+  {
+    "name": "attachments",
+    "label": "Attachments",
+    "type": "array",
+    "spec": {
+      "type": "collection",
+      "spec": [
+        {
+          "name": "id",
+          "label": "Attachment ID",
+          "type": "text"
+        },
+        {
+          "name": "filename",
+          "label": "Filename",
+          "type": "text"
+        },
+        {
+          "name": "mime_type",
+          "label": "MIME type",
+          "type": "text"
+        },
+        {
+          "name": "size_bytes",
+          "label": "Size in bytes",
+          "type": "uinteger"
+        },
+        {
+          "name": "url",
+          "label": "Download URL",
+          "type": "url"
+        }
+      ]
+    }
+  },
+  {
+    "name": "labels",
+    "label": "Labels",
+    "type": "array",
+    "spec": {
+      "type": "collection",
+      "spec": [
+        {
+          "name": "id",
+          "label": "Label ID",
+          "type": "text"
+        },
+        {
+          "name": "name",
+          "label": "Name",
+          "type": "text"
+        },
+        {
+          "name": "color",
+          "label": "Color",
+          "type": "text"
+        }
+      ]
+    }
+  }
+]
