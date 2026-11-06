@@ -11,9 +11,9 @@ const validate = ajv.compile(schema);
 assert(validate(provider), JSON.stringify(validate.errors, null, 2));
 const config = provider.sentfromai;
 assert.equal(config.auth_mode, 'API_KEY');
-assert.equal(config.proxy.base_url, 'https://api.sentfrom.ai/v1');
+assert.equal(config.proxy.base_url, 'https://api.sentfrom.ai');
 assert.equal(config.proxy.headers.authorization, 'Bearer ${apiKey}');
-assert.deepEqual(config.proxy.verification, {method:'GET',endpoints:['/inboxes']});
+assert.deepEqual(config.proxy.verification, {method:'GET',endpoints:['/v1/inboxes']});
 assert(config.credentials.apiKey.secret);
 assert(!config.credentials.apiKey.pattern, 'Legacy valid key prefixes must remain supported');
 for (const relative of ['docs/integrations/all/sentfromai.mdx','docs/integrations/all/sentfromai/connect.mdx','packages/webapp/public/images/template-logos/sentfromai.svg']) {

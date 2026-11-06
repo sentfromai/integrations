@@ -4,13 +4,13 @@
     "categories": ["communication", "dev-tools"],
     "auth_mode": "API_KEY",
     "proxy": {
-      "base_url": "https://api.sentfrom.ai/v1",
+      "base_url": "https://api.sentfrom.ai",
       "headers": {
         "authorization": "Bearer ${apiKey}"
       },
       "verification": {
         "method": "GET",
-        "endpoints": ["/inboxes"]
+        "endpoints": ["/v1/inboxes"]
       }
     },
     "docs": "https://nango.dev/docs/integrations/all/sentfromai",
