@@ -4,16 +4,16 @@ Provider configuration, connection instructions, and upstream file overlay. This
 
 ## Submission status
 
-[Upstream draft PR #8204](https://github.com/NangoHQ/nango/pull/8204) is open. The provider is awaiting upstream review and is not yet an approved Nango listing.
+[Upstream draft PR #8204](https://github.com/NangoHQ/nango/pull/8204) is open at commit `35ec7c6da873df1ebc5541cfabb767387ea11161`. It is still a draft, GitHub reports it conflicting with `master`, and it is not an approved Nango listing. This repository was not used to comment on, mark ready, or merge that PR.
 
-Validated on 6 November 2026:
+Checked again on 6 November 2026 in an isolated cloud environment:
 
-- Nango's authoritative provider validator passes.
-- Generated documentation indexes are updated; the complete Mintlify scan reports `success no broken links found`.
-- The provider configuration's live `GET /v1/inboxes` check returns **200** with an active, isolated test-account key. A deliberately invalid key returns **401**. No email sends were used for these checks.
-- Provider YAML passes the repository's Prettier configuration, and the contribution passes `git diff --check`.
+- `node validate.cjs` against the provider schema from that PR commit passes.
+- `nangohq/nango-server:hosted` (`sha256:284afbd7562e15c995d6bdb03ef0a883da16287589634b34bead0f863dab3c20`, built 6 November 2026) loads the PR `providers.yaml`. `GET /providers.json` returns SentFromAI as `API_KEY`, base URL `https://api.sentfrom.ai`, verification `GET /v1/inboxes`, and `Bearer ${apiKey}`.
+- With that real base URL, both the Connect UI route `POST /api-auth/api-key/:providerConfigKey` and `POST /connections` reject a non-secret invalid key with `400 connection_test_failed`. No connection row is stored. During that call the Nango container sends TLS to `api.sentfrom.ai` (`153.52.255.22:443`). A direct request with the same invalid key returns **401**. The Nango error body does not include the upstream status code, so the packet capture and the direct 401 are separate evidence.
+- A local mock can complete the success path only when SentFromAI's `base_url` is temporarily pointed at that mock and `NANGO_OUTBOUND_URL_POLICY` allows the private address. That run is not a live SentFromAI test. The dashboard Connect UI then shows success and lists the connection, and Nango's proxy follows the mock host with a single `Bearer` header. The provider file was restored to `https://api.sentfrom.ai` afterward.
 
-The full Nango server/dashboard connection flow remains untested, so the PR remains a draft. The live check verifies the configured base URL, Bearer header, and verification endpoint directly.
+An earlier direct `GET /v1/inboxes` **200** with a dedicated test key is recorded in the PR body. This session did not repeat that success, because no SentFromAI API key was supplied and other workspace credentials were not reused.
 
 ## Contents
 
@@ -48,13 +48,17 @@ NODE_PATH=/path/to/nango-checkout/node_modules node validate.cjs /path/to/nango-
 
 Review the resulting diff. The navigation insertion locates Nango's `APIs & Integrations` group and inserts the SentFromAI page alphabetically by provider slug. It stops if that layout has changed.
 
-## Remaining live validation
+## Remaining before upstream review
 
-The official contribution process calls for a real connection test. Start Nango locally using its documented Docker setup, add the SentFromAI provider, create a connection with a dedicated test-account API key, and confirm `GET /v1/inboxes` succeeds. Verify that an invalid key is rejected and that proxy calls go only to the configured SentFromAI API host. Do not expose a key in a PR, issue, log, screenshot, or docs.
+The official connection test still needs one dedicated SentFromAI test API key in the local Nango dashboard while `base_url` is `https://api.sentfrom.ai`. Create the integration, choose **Authorize**, enter that key, and confirm the connection appears with no error. Then proxy `GET /v1/inboxes` through that connection and expect **200**. Keep the key out of the PR, logs, and screenshots. A mock server, a direct curl, or an invalid-key rejection does not replace this step.
+
+Before marking PR 8204 ready:
+
+1. Rebase onto current `master`. A local merge of `master` into `35ec7c6` conflicted only in the generated counts in `docs/api-catalog.txt` (1136 vs 1201) and `docs/llms.txt`. `packages/providers/providers.yaml` merged with a single `sentfromai` entry. Regenerate the docs indexes after the rebase and rerun provider validation.
+2. Repeat the dashboard connection and proxy check with the dedicated live key.
+3. Update the existing draft PR with that evidence. Do not open a duplicate PR.
 
 The supplied configuration deliberately does not enforce a key prefix: active keys created under the older service name remain valid. A successful read-only credential check does not mean the account is permitted to send; account status, claim requirements, plan limits, and suppression rules still apply.
-
-After the full connection flow passes, update the existing draft PR with the actual validation evidence and make it ready for review. Do not open a duplicate PR or claim end-to-end validation before running it.
 
 ## Provenance
 
