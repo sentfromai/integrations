@@ -49,10 +49,10 @@ Tests use the official `createAppTester` and Nock; all external networking is di
 
 ## Publication handoff
 
-This code is built and locally tested. It has not been uploaded to Zapier, tested in live Zaps, or approved for the App Directory.
+This code is built, locally tested and smoke-tested against the live API with an isolated account. Credential-free remote definition checks pass with zero errors or publishing tasks and 13 non-blocking recommendations. It has not been registered or uploaded as a runnable Zapier integration, tested in hosted Zaps, or approved for the App Directory. See [VALIDATION.md](VALIDATION.md) for the scope of each check.
 
 1. An authorized SentFromAI owner must sign in to a Zapier developer account and register or link this app. Check the account for an existing SentFromAI integration first to avoid duplicate listings.
-2. Run the remote platform checks (`npm run validate:remote`) and upload the package through the CLI or developer portal. These actions send integration source/metadata to Zapier. Remote checks were not completed in this task because automatic approval review blocked that transmission; local schema validation and local packaging were completed instead.
+2. Authenticate the CLI with an owner-provided deploy key, then register/link and upload the package. Remote definition checks (`npm run validate:remote`) already passed without credentials on 6 November; review the remaining non-blocking recommendations. Definition validation is separate from registration, upload, hosted testing and publishing.
 3. Add listing details below, a brand-owned logo, support/contact information, and a dedicated review/test account. Do not paste customer API keys into source code, GitHub, or public forms.
 4. Create and enable a live test Zap for every trigger, action and search, using an owner-controlled inbox and recipient. Retain successful Zap history for review. Confirm subscription creation/removal, production raw-header normalization, full-body hydration, connection label, and invalid/revoked-key behavior.
 5. Submit through the developer platform's publishing process after all requirements pass. Zapier reviews public integrations; a successful build or upload is not a public catalog listing.

@@ -18,7 +18,7 @@ module.exports = {
     sample: require('../lib/samples').draft,
     outputFields: [
       { key: 'id', label: 'Draft ID' }, { key: 'inbox_id', label: 'Inbox ID' },
-      { key: 'to_addrs', label: 'To' }, { key: 'subject', label: 'Subject' },
+      { key: 'to_addrs', label: 'To', type: 'string', list: true }, { key: 'subject', label: 'Subject' },
       { key: 'status', label: 'Status' }, { key: 'scheduled_at', label: 'Scheduled At', type: 'datetime' },
     ],
   },

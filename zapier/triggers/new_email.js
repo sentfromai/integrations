@@ -30,7 +30,7 @@ const perform = async (z, bundle) => {
 
 module.exports = {
   key: 'new_email', noun: 'Email',
-  display: { label: 'New Email Received', description: 'Triggers instantly when an email is received in a SentFromAI inbox.' },
+  display: { label: 'New Email Received', description: 'Triggers when an email is received in a SentFromAI inbox.' },
   operation: {
     type: 'hook', inputFields: [inboxField(false)], perform,
     performSubscribe: async (z, bundle) => request(z, '/webhooks', {

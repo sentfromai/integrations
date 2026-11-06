@@ -19,7 +19,7 @@ const inboxOutput = [
 const messageOutput = [
   { key: 'id', label: 'Message ID' }, { key: 'thread_id', label: 'Thread ID' },
   { key: 'direction', label: 'Direction' }, { key: 'from_addr', label: 'From' },
-  { key: 'to_addrs', label: 'To' }, { key: 'subject', label: 'Subject' },
+  { key: 'to_addrs', label: 'To', type: 'string', list: true }, { key: 'subject', label: 'Subject' },
   { key: 'body_text', label: 'Text Body' }, { key: 'body_html', label: 'HTML Body' },
   { key: 'created_at', label: 'Created At', type: 'datetime' },
   { key: 'received_at', label: 'Received At', type: 'datetime' },
