@@ -8,6 +8,7 @@ Connect [SentFromAI](https://sentfrom.ai) email inboxes to automation platforms 
 | Zapier | [zapier/](zapier/) | Instant inbound-email trigger, inbox trigger, email actions and search | Local tests/schema checks and live API smoke tests through the Zapier runtime pass; authenticated upload, hosted test Zaps and directory review pending |
 | Make | [make/](make/) | Custom-app connection and eight modules for inboxes and email | Source and API-contract checks complete; installation, Make runtime tests and review pending |
 | Nango | [nango/](nango/) | API-key provider configuration and connection documentation | Provider schema and live API-key checks pass; [draft upstream PR](https://github.com/NangoHQ/nango/pull/8204) submitted; full Nango connection test and review pending |
+| Activepieces | [activepieces/](activepieces/) | API-key connection, inbox and email actions, received-email polling trigger | Built and tested against the published piece SDK with mocked HTTP; Activepieces project install, live API runs, and upstream piece review pending |
 
 These packages are under development. A successful local build is not marketplace verification. Each platform directory documents its installation steps, remaining live tests and limitations.
 
@@ -23,6 +24,6 @@ Use dedicated test accounts for connector validation. Sending and replying deliv
 
 ## Development
 
-The n8n and Zapier packages use independent npm lockfiles and mocked HTTP tests. Make provides a dependency-free API-contract check. Nango's provider contribution is validated against its upstream schema. See each directory for exact commands.
+The n8n, Zapier, and Activepieces packages use independent npm lockfiles and mocked HTTP tests. Make provides a dependency-free API-contract check. Nango's provider contribution is validated against its upstream schema. See each directory for exact commands.
 
 Copyright 2026 Brightboard AI Ltd. Connector source is MIT licensed; SentFromAI branding remains the property of its owner. Platform names are trademarks of their respective owners.
