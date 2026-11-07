@@ -1,11 +1,5 @@
 [
   {
-    "name": "__IMTCONN__",
-    "label": "Connection",
-    "type": "account:sentfromai",
-    "required": true
-  },
-  {
     "name": "inbox_id",
     "label": "Inbox ID",
     "type": "text",

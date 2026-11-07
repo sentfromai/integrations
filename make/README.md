@@ -1,6 +1,8 @@
 # SentFromAI for Make
 
-Developer source for a Make custom app. This package contains editor component JSON, not a Make-generated import archive. It has not been installed, executed, reviewed, or listed in Make yet.
+Developer source for a Make custom app. This package contains editor component JSON, not a Make-generated import archive.
+
+The component shape matches a private eu1 custom app, `sentfromai-zguaud` version 1: each module is linked to the `sentfromai` connection, and no module declares `__IMTCONN__` as a static parameter. Make injects that connection selector itself. Hosted scenario runs still need a signed-in user and are not claimed as passed. The app is not reviewed or listed.
 
 Included modules:
 
@@ -18,11 +20,10 @@ Included modules:
 1. Sign in to Make and open the custom apps developer editor. Create a new private app named `sentfromai`, label **SentFromAI**, API version 1. Use `app-settings.json` for the descriptive fields and `assets/logo.png` for the app icon.
 2. Copy `base.json` into **Base**.
 3. Create a **Basic** connection named `sentfromai`. Copy `connections/sentfromai/parameters.json` into **Parameters** and `communication.json` into **Communication**.
-4. Create each module listed in `modules.json`, selecting the corresponding action, search, polling trigger, or universal type. For each module, copy the matching files into **Communication**, **Static parameters**, **Mappable parameters**, **Interface**, and **Samples**. For the polling trigger, also copy **Epoch**. A trigger has static parameters only; its mappable-parameters file is intentionally empty.
-5. Keep the app private while testing. Create a connection with a dedicated SentFromAI test API key. The connection check uses `GET /v1/inboxes`, so it does not send email.
-6. Run the controlled-account tests below. Save scenario links and recent successful execution logs for the Make reviewer. Then follow Make's publish and review process.
-
-The connection selector uses `account:sentfromai`. If the Make editor assigns a different internal connection identifier, update this type in each module's static parameters to match before saving.
+4. Create each module listed in `modules.json`, selecting the corresponding action, search, polling trigger, or universal type. Set each module's connection to the `sentfromai` connection from step 3. Copy **Communication**, **Mappable parameters**, **Interface**, and **Samples**. Leave **Static parameters** empty when `static-parameters.json` is `[]`. For Watch Received Emails, copy only its two static parameters, Inbox ID and Limit, and also copy **Epoch**. Its mappable-parameters file is intentionally empty.
+5. Do not add a Connection static parameter. The Apps API rejects the name `__IMTCONN__` (`Static parameter name __IMTCONN__ is not valid name`). Make inserts the connection field after the module is associated with `sentfromai`. There is no `account:sentfromai` value to copy into static parameters.
+6. Keep the app private while testing. Create a connection with a dedicated SentFromAI test API key. The connection check uses `GET /v1/inboxes`, so it does not send email.
+7. Run the controlled-account tests below once a user is signed in. Those hosted runs are still outstanding. Save scenario links and recent successful execution logs for the Make reviewer before following Make's publish and review process.
 
 ## Validation
 
