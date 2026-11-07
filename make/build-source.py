@@ -15,7 +15,6 @@ def field(name, label, type="text", **kwargs):
 def mapping(name):
     return "{{parameters." + name + "}}"
 
-connection = field("__IMTCONN__", "Connection", "account:sentfromai", required=True)
 id_field = field("message_id", "Message ID", required=True, help="SentFromAI message UUID, not the email Message-ID header.")
 inbox_field = field("inbox_id", "Inbox ID", required=True)
 inbox_interface = [field("id", "Inbox ID"), field("local_part", "Local part"), field("display_name", "Display name"), field("address", "Email address", "email")]
@@ -34,7 +33,9 @@ modules = []
 def module(name, label, kind, description, api, expect, interface, sample, static=None, epoch=None):
     modules.append({"name":name,"label":label,"type":kind,"description":description,"connection":"sentfromai"})
     write(f"modules/{name}/communication.json",api)
-    write(f"modules/{name}/static-parameters.json", [connection] + (static or []))
+    # Make attaches the connection from modules.json and injects its selector.
+    # __IMTCONN__ is reserved and is rejected as a static parameter name.
+    write(f"modules/{name}/static-parameters.json", static or [])
     write(f"modules/{name}/mappable-parameters.json",expect)
     write(f"modules/{name}/interface.json",interface)
     write(f"modules/{name}/sample.json",sample)
