@@ -1,0 +1,46 @@
+{
+  "name": "@activepieces/piece-sentfromai",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SentFromAI inboxes and email for Activepieces flows",
+  "license": "MIT",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit",
+    "test": "npm run build && node --test test/*.test.cjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sentfromai/integrations.git",
+    "directory": "activepieces"
+  },
+  "bugs": {
+    "url": "https://github.com/sentfromai/integrations/issues"
+  },
+  "homepage": "https://sentfrom.ai",
+  "author": {
+    "name": "Samuel Arregger-Robson",
+    "email": "samuel@sentfrom.ai"
+  },
+  "keywords": [
+    "activepieces",
+    "sentfromai",
+    "email"
+  ],
+  "dependencies": {
+    "@activepieces/pieces-common": "0.12.5",
+    "@activepieces/pieces-framework": "0.32.0",
+    "@activepieces/shared": "0.95.1",
+    "tslib": "2.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.13.10",
+    "nock": "14.0.10",
+    "typescript": "5.9.2"
+  }
+}
