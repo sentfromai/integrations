@@ -544,7 +544,8 @@ async function webhookRequest(registration, body, signature, expected) {
       "GET",
       "/rest/credentials/" + credential.id + "?includeData=true",
     );
-    assert.equal(storedCredential.data.apiKey, apiKey);
+    assert.notEqual(storedCredential.data.apiKey, apiKey);
+    assert.match(storedCredential.data.apiKey, /^__n8n_BLANK_VALUE_/);
     const tested = await request("POST", "/rest/credentials/test", {
       credentials: {
         id: credential.id,
