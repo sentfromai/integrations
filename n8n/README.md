@@ -47,9 +47,9 @@ The main node can also be connected as a tool to an n8n AI Agent. Configure the 
 
 Supply **Text**, **HTML**, or both. Enter bare addresses separated by commas in **To**, **CC**, and **BCC**. The sending identity is the selected inbox; the connector does not accept an arbitrary From address.
 
-For **Send**, set **Additional Fields → Client ID** to a stable unique value from your business event, such as an order notification ID. Reuse the same value when retrying the same logical send. Generate a different value for each different message. The API uses `client_id` for deduplication.
+For **Send** and **Reply**, set **Additional Fields → Client ID** to a stable unique value from your business event, such as an order notification ID. Reuse the same value when retrying the same logical send. Generate a different value for each different message. The API uses `client_id` for deduplication.
 
-**Reply currently has no API idempotency key.** The connector does not automatically retry requests. Before rerunning a failed reply after a timeout, check the thread to see whether the first attempt succeeded. Enabling n8n's **Retry On Fail** for reply operations can cause duplicate emails.
+Retry keys accept 1–255 UTF-8 bytes. Reuse a key only with identical content; changed content or an unresolved send returns 409. The connector does not automatically retry requests. After a timeout, check the message/thread and preserve the same key; switching keys can send a duplicate. Enable n8n's **Retry On Fail** only when a stable key is supplied and your workflow handles unresolved results.
 
 Account claim requirements, sending pauses, recipient suppression, plan limits and abuse protections remain enforced by the SentFromAI API. The node surfaces API errors instead of trying to bypass them.
 

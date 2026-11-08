@@ -1,0 +1,68 @@
+name: n8n server QA
+
+on:
+  pull_request:
+    paths:
+      - "n8n/**"
+      - ".github/workflows/n8n-server-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: n8n_qa
+          POSTGRES_PASSWORD: synthetic-local-qa-only
+          POSTGRES_DB: sentfromai_n8n_qa
+        options: >-
+          --publish 127.0.0.1:55439:5432
+          --health-cmd "pg_isready -U n8n_qa -d sentfromai_n8n_qa"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: n8n/package-lock.json
+      - name: Build and validate the connector
+        working-directory: n8n
+        run: |
+          npm ci --ignore-scripts
+          npm run build
+          npm run lint
+          npm test
+          npm run typecheck
+          node --test tests/server/transport.test.cjs
+      - name: Install the pinned current n8n server in ephemeral runner storage
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+          PUPPETEER_SKIP_DOWNLOAD: "1"
+        run: npm install --prefix "$RUNNER_TEMP/sentfromai-n8n-runtime" --no-audit --no-fund n8n@2.46.6
+      - name: Exercise the real server with synthetic API fixtures
+        env:
+          SENTFROMAI_QA_RUNTIME: ${{ runner.temp }}/sentfromai-n8n-runtime/node_modules/n8n
+          SENTFROMAI_QA_RESULTS: ${{ runner.temp }}/sentfromai-n8n-results
+          SENTFROMAI_QA_DB_HOST: "127.0.0.1"
+          SENTFROMAI_QA_DB_PORT: "55439"
+          SENTFROMAI_QA_DB_NAME: sentfromai_n8n_qa
+          SENTFROMAI_QA_DB_USER: n8n_qa
+          SENTFROMAI_QA_DB_PASSWORD: synthetic-local-qa-only
+        run: node n8n/tests/server/run.cjs
+      - name: Upload sanitized QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentfromai-n8n-server-qa
+          path: ${{ runner.temp }}/sentfromai-n8n-results
+          if-no-files-found: ignore
+          retention-days: 14

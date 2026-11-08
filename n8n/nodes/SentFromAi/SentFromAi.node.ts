@@ -113,7 +113,25 @@ const messageFields: INodeProperties[] = [
         type: "string",
         default: "",
         description:
-          "Stable unique identifier for this logical send. Reuse it when retrying the same message to avoid duplicate sends.",
+          "Stable unique key, 1-255 UTF-8 bytes. Retry with the same key and identical content. Investigate uncertain results instead of changing keys.",
+      },
+    ],
+  },
+  {
+    displayName: "Additional Fields",
+    name: "replyFields",
+    type: "collection",
+    default: {},
+    placeholder: "Add Field",
+    displayOptions: { show: { resource: ["message"], operation: ["reply"] } },
+    options: [
+      {
+        displayName: "Client ID",
+        name: "clientId",
+        type: "string",
+        default: "",
+        description:
+          "Stable unique key, 1-255 UTF-8 bytes. Retry with the same key and identical content. Investigate uncertain results instead of changing keys.",
       },
     ],
   },
@@ -427,6 +445,13 @@ export class SentFromAi implements INodeType {
               itemIndex,
               false,
             ) as boolean;
+            const fields = this.getNodeParameter(
+              "replyFields",
+              itemIndex,
+              {},
+            ) as IDataObject;
+            if (fields.clientId)
+              body.client_id = nonEmpty(String(fields.clientId), "Client ID");
           }
         } else {
           throw new NodeOperationError(
