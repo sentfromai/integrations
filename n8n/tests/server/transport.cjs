@@ -73,10 +73,12 @@ if (originalFetch)
       url.port = String(configuration.port);
       return originalFetch(
         input instanceof Request ? new Request(url, input) : url,
-        init,
+        { ...init, redirect: "error" },
       );
     }
     if (!allowed.has(url.hostname))
       throw new Error("External networking is disabled in isolated n8n QA");
-    return originalFetch(input, init);
+    // Undici follows redirects internally, without re-entering this wrapper.
+    // Override both Request and init settings so no hop bypasses host validation.
+    return originalFetch(input, { ...init, redirect: "error" });
   };

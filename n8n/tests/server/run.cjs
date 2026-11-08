@@ -175,6 +175,29 @@ async function execution(id) {
   }
   throw new Error("Timed out waiting for persisted workflow execution");
 }
+async function workflowExecutions(workflowId) {
+  const result = await request(
+    "GET",
+    "/rest/executions?limit=100&filter=" +
+      encodeURIComponent(JSON.stringify({ workflowId })),
+  );
+  assert(Array.isArray(result.results), "Expected execution list results");
+  assert(result.results.every((item) => item.workflowId === workflowId));
+  return result.results;
+}
+async function waitForRegistrationCount(expected) {
+  // Current n8n publishes/unpublishes through an asynchronous outbox. A 200
+  // response alone is not evidence that the external webhook hook completed.
+  for (let i = 0; i < 120 && registrations.size !== expected; i++) {
+    if (stopped()) throw new Error("n8n exited while reconciling webhooks");
+    await wait(250);
+  }
+  assert.equal(
+    registrations.size,
+    expected,
+    "Timed out reconciling webhook registration: " + sanitize(logs).slice(-2500),
+  );
+}
 function output(runData, name) {
   const items = runData[name]?.at(-1)?.data?.main?.[0];
   assert(Array.isArray(items), "Expected node output items for " + name);
@@ -693,7 +716,7 @@ async function webhookRequest(registration, body, signature, expected) {
       name: "Synthetic activation",
       description: "Local HTTP QA only",
     });
-    assert.equal(registrations.size, 1);
+    await waitForRegistrationCount(1);
     assert.equal(registrationCount, 1);
     const registration = [...registrations.values()][0];
     report(
@@ -708,15 +731,16 @@ async function webhookRequest(registration, body, signature, expected) {
     const signature =
       "sha256=" +
       createHmac("sha256", registration.secret).update(payload).digest("hex");
+    assert.deepEqual(await workflowExecutions(workflow.id), []);
     await webhookRequest(registration, payload + " ", signature, 401);
     await webhookRequest(registration, payload, "bad-signature", 401);
-    assert.equal(
-      await request(
-        "GET",
-        "/rest/workflows/" + workflow.id + "/executions/last-successful",
-      ),
-      null,
-    );
+    // Include running/error executions, not just last-successful. Recheck after
+    // a bounded asynchronous-processing window, then require exactly one total
+    // execution after the valid event below to catch delayed invalid executions.
+    for (let i = 0; i < 5; i++) {
+      await wait(200);
+      assert.deepEqual(await workflowExecutions(workflow.id), []);
+    }
     report(
       "real server webhook rejects tampered raw bytes and invalid signatures without a workflow execution",
     );
@@ -737,11 +761,14 @@ async function webhookRequest(registration, body, signature, expected) {
     const eventOutput = output(await execution(successful.id), "Capture");
     assert.equal(eventOutput[0].message.id, sourceMessage);
     assert(!JSON.stringify(eventOutput).includes(registration.secret));
+    const eventExecutions = await workflowExecutions(workflow.id);
+    assert.equal(eventExecutions.length, 1);
+    assert.equal(eventExecutions[0].id, successful.id);
     report(
       "valid raw-body HMAC event reaches workflow output without exposing its signing secret",
     );
     await request("POST", "/rest/workflows/" + workflow.id + "/deactivate", {});
-    assert.equal(registrations.size, 0);
+    await waitForRegistrationCount(0);
     assert.equal(deleteCount, 1);
     report("deactivation deletes exactly the endpoint owned by this workflow");
   } catch (error) {

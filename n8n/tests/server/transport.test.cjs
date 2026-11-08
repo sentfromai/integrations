@@ -6,7 +6,7 @@ const path = require("node:path");
 const https = require("node:https");
 const { execFileSync, spawn } = require("node:child_process");
 
-test("QA transport uses trusted localhost TLS and refuses external or plaintext API traffic", async () => {
+test("QA transport uses trusted localhost TLS and refuses external, plaintext, or redirected traffic", async () => {
   const directory = fs.mkdtempSync(
     path.join(os.tmpdir(), "sentfromai-qa-transport-"),
   );
@@ -36,18 +36,35 @@ test("QA transport uses trusted localhost TLS and refuses external or plaintext 
     ],
     { stdio: "ignore" },
   );
-  let calls = 0;
+  let calls = 0,
+    redirectTargetCalls = 0;
+  const target = https.createServer(
+    { key: fs.readFileSync(key), cert: fs.readFileSync(ca) },
+    (_req, res) => {
+      redirectTargetCalls++;
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end('{"unexpected_redirect_hop":true}');
+    },
+  );
   const server = https.createServer(
     { key: fs.readFileSync(key), cert: fs.readFileSync(ca) },
     (req, res) => {
       calls++;
       assert.equal(req.headers.authorization, "Bearer synthetic-test-only");
+      if (req.url === "/redirect") {
+        res.writeHead(302, {
+          location: "https://127.0.0.1:" + target.address().port + "/hop",
+        });
+        res.end();
+        return;
+      }
       assert.equal(req.url, "/v1/inboxes");
       res.writeHead(200, { "content-type": "application/json" });
       res.end('{"inboxes":[]}');
     },
   );
   try {
+    await new Promise((resolve) => target.listen(0, "127.0.0.1", resolve));
     await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
     const transportConfig = path.join(directory, "transport.json");
     fs.writeFileSync(
@@ -61,6 +78,10 @@ test("QA transport uses trusted localhost TLS and refuses external or plaintext 
         assert.throws(()=>https.get('https://unauthorized.example.test/'),/External networking/);
         assert.throws(()=>http.get('http://api.sentfrom.ai/v1/inboxes'),/plaintext/);
         await assert.rejects(fetch('https://unauthorized.example.test/'),/External networking/);
+        const headers={authorization:'Bearer synthetic-test-only'};
+        await assert.rejects(fetch('https://api.sentfrom.ai/redirect',{headers,redirect:'follow',signal:AbortSignal.timeout(3000)}));
+        await assert.rejects(fetch(new Request('https://api.sentfrom.ai/redirect',{headers,redirect:'follow'}),{redirect:'follow',signal:AbortSignal.timeout(3000)}));
+        await assert.rejects(fetch(new Request('https://127.0.0.1:${server.address().port}/redirect',{headers,redirect:'follow'}),{redirect:'follow',signal:AbortSignal.timeout(3000)}));
       })().catch(error=>{console.error(error);process.exitCode=1});`;
     const child = spawn(
       process.execPath,
@@ -82,9 +103,11 @@ test("QA transport uses trusted localhost TLS and refuses external or plaintext 
       child.on("exit", (code, signal) => resolve({ code, signal })),
     );
     assert.equal(result.code, 0, diagnostic);
-    assert.equal(calls, 2);
+    assert.equal(calls, 5);
+    assert.equal(redirectTargetCalls, 0, "Fetch must not follow any redirect hop");
   } finally {
     await new Promise((resolve) => server.close(resolve));
+    await new Promise((resolve) => target.close(resolve));
     fs.rmSync(directory, { recursive: true, force: true });
   }
 });
