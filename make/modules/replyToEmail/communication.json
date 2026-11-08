@@ -5,7 +5,8 @@
   "body": {
     "text": "{{parameters.text}}",
     "html": "{{parameters.html}}",
-    "reply_all": "{{parameters.reply_all}}"
+    "reply_all": "{{parameters.reply_all}}",
+    "client_id": "{{parameters.client_id}}"
   },
   "response": {
     "output": "{{body}}"

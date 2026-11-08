@@ -155,6 +155,9 @@
               }
             }
           },
+          "409": {
+            "description": "client_id_conflict or send_outcome_pending. Do not retry with a new key."
+          },
           "422": {
             "description": "All recipients suppressed or blocked"
           }
@@ -281,6 +284,10 @@
                   },
                   "reply_all": {
                     "type": "boolean"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "Optional retry key, 1-255 UTF-8 bytes. A key binds the effective request content within this tenant. Retry with the same key and identical content; a different body or unresolved send returns 409. Never switch to a new key to retry an uncertain send. Omit it only when duplicate suppression is not needed."
                   }
                 }
               }
@@ -297,6 +304,9 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "client_id_conflict or send_outcome_pending. Do not retry with a new key."
           }
         }
       }
@@ -334,6 +344,10 @@
                   },
                   "from_inbox_id": {
                     "type": "string"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "Optional retry key, 1-255 UTF-8 bytes. A key binds the effective request content within this tenant. Retry with the same key and identical content; a different body or unresolved send returns 409. Never switch to a new key to retry an uncertain send. Omit it only when duplicate suppression is not needed."
                   }
                 }
               }
@@ -350,6 +364,9 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "client_id_conflict or send_outcome_pending. Do not retry with a new key."
           }
         }
       }
@@ -577,8 +594,12 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Draft is not sendable (including an in-flight or uncertain send)."
           }
-        }
+        },
+        "description": "Only draft and scheduled records can be sent. Sending and uncertain records may already have reached the provider; inspect the draft and contact support instead of recreating or resending it."
       }
     },
     "/webhooks": {
@@ -1260,8 +1281,8 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Created; securely save the API key and claim link.",
+          "200": {
+            "description": "Original signup response replayed; the inbox and API key are unchanged.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1270,8 +1291,8 @@
               }
             }
           },
-          "200": {
-            "description": "Original signup response replayed; the inbox and API key are unchanged.",
+          "201": {
+            "description": "Created; securely save the API key and claim link.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1310,6 +1331,9 @@
               }
             }
           },
+          "413": {
+            "description": "Signup request body exceeds 4096 bytes."
+          },
           "429": {
             "description": "Rate limited. Respect Retry-After before retrying; never create another signup identity to avoid a limit.",
             "content": {
@@ -1338,9 +1362,6 @@
                 }
               }
             }
-          },
-          "413": {
-            "description": "Signup request body exceeds 4096 bytes."
           }
         }
       }
@@ -1619,7 +1640,8 @@
             }
           },
           "client_id": {
-            "type": "string"
+            "type": "string",
+            "description": "Optional retry key, 1-255 UTF-8 bytes. A key binds the effective request content within this tenant. Retry with the same key and identical content; a different body or unresolved send returns 409. Never switch to a new key to retry an uncertain send. Omit it only when duplicate suppression is not needed."
           },
           "attachments": {
             "type": "array",
@@ -1646,6 +1668,10 @@
           },
           "idempotent": {
             "type": "boolean"
+          },
+          "reconciliation_required": {
+            "type": "boolean",
+            "description": "When true, the persisted message proves provider acceptance, but attachment/storage completion or local acknowledgement still needs operator reconciliation. Do not send it again."
           }
         }
       },
@@ -1758,7 +1784,8 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "description": "preparing, draft, scheduled, sending, sent, uncertain, failed or canceled. Sending and uncertain may already have been delivered; do not recreate or resend them."
           },
           "scheduled_at": {
             "type": [

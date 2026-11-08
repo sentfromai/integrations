@@ -86,6 +86,7 @@ assert.equal(trigger.response.trigger.id,'{{item.id}}');
 assert(!trigger.pagination,'The API has no paging cursor; do not invent one');
 const attachment=read('modules/getEmail/interface.json').find(f=>f.name==='attachments');
 assert(attachment.spec.spec.some(f=>f.name==='url'),'Attachment URL uses the API field url');
-assert.equal(read('modules/replyToEmail/communication.json').body.client_id,undefined,'Reply endpoint has no idempotency field');
+assert.equal(read('modules/replyToEmail/communication.json').body.client_id,'{{parameters.client_id}}','Reply must preserve the current API retry key');
+assert(read('modules/replyToEmail/mappable-parameters.json').some(field=>field.name==='client_id'&&!field.required),'Reply idempotency stays optional');
 console.log(`PASS: ${modules.length} Make components checked against the pinned SentFromAI API contract, recipient types, credential handling, safe universal path and polling behavior.`);
 console.log('This is local contract validation, not execution by the Make IML runtime.');

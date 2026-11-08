@@ -53,6 +53,6 @@
     "name": "client_id",
     "label": "Idempotency key",
     "type": "text",
-    "help": "Optional. Use a stable, unique ID for this logical send. Reuse it only when retrying that same send."
+    "help": "Optional, 1-255 UTF-8 bytes. Use a stable unique key for this logical email. Retry only with the same key and identical content. If the result is uncertain or 409, investigate; do not switch to a new key."
   }
 ]
