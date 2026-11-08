@@ -11,7 +11,7 @@ Once this package is published to npm, self-hosted n8n administrators can instal
 
 n8n Cloud installation requires separate verification by n8n. Publishing the npm package does not mean that n8n has verified or listed it.
 
-For local development, use Node.js 22.22 or later:
+Use Node.js 24 for development against the current n8n server. The package build also supports Node.js 22.22 or later:
 
 ```sh
 npm ci

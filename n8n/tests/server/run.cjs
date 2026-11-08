@@ -120,7 +120,7 @@ async function request(method, route, body, expected = 200) {
     const pair = value.split(";")[0];
     if (pair.startsWith("n8n-auth=")) {
       cookie = pair;
-      secrets.push(pair);
+      secrets.push(pair, pair.slice("n8n-auth=".length));
     }
   }
   const text = await response.text();
@@ -406,7 +406,7 @@ async function startServer(artifact, transport, port) {
     N8N_PROTOCOL: "http",
     N8N_EDITOR_BASE_URL: base,
     N8N_SECURE_COOKIE: "false",
-    WEBHOOK_URL: "https://sentfromai-n8n-qa.invalid/",
+    N8N_WEBHOOK_URL: "https://sentfromai-n8n-qa.invalid/",
     N8N_ENCRYPTION_KEY: encryptionKey,
     N8N_DIAGNOSTICS_ENABLED: "false",
     N8N_PERSONALIZATION_ENABLED: "false",
@@ -540,19 +540,26 @@ async function webhookRequest(registration, body, signature, expected) {
       type: "sentFromAiApi",
       data: { apiKey },
     });
+    const storedCredential = await request(
+      "GET",
+      "/rest/credentials/" + credential.id + "?includeData=true",
+    );
+    assert.equal(storedCredential.data.apiKey, apiKey);
     const tested = await request("POST", "/rest/credentials/test", {
       credentials: {
         id: credential.id,
         name: credential.name,
         type: "sentFromAiApi",
+        data: storedCredential.data,
       },
     });
-    assert.equal(tested.status, "OK");
+    assert.equal(tested.status, "OK", sanitize(JSON.stringify(tested)));
     const invalid = await request("POST", "/rest/credentials", {
       name: "Synthetic invalid credential",
       type: "sentFromAiApi",
       data: { apiKey: "invalid-synthetic-key" },
     });
+    const requestsBeforeInvalidTest = requests.length;
     assert.equal(
       (
         await request("POST", "/rest/credentials/test", {
@@ -560,10 +567,15 @@ async function webhookRequest(registration, body, signature, expected) {
             id: invalid.id,
             name: invalid.name,
             type: "sentFromAiApi",
+            data: { apiKey: "invalid-synthetic-key" },
           },
         })
       ).status,
       "Error",
+    );
+    assert(
+      requests.length > requestsBeforeInvalidTest,
+      "Invalid credential test must reach the synthetic API",
     );
     report(
       "persisted credentials pass a real server connection test and reject invalid authentication",

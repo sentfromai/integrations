@@ -3,10 +3,10 @@
     "id": "n8n-nodes-sentfromai@0.1.0",
     "name": "n8n-nodes-sentfromai",
     "version": "0.1.0",
-    "size": 17194,
-    "unpackedSize": 68984,
-    "shasum": "6089a3a9844c3d8eeba1f49609a1c2b1020f3ddd",
-    "integrity": "sha512-WXZEqOVaO9CPBJtCuDndlCQiIjR2WaeuiE1i4GffmVRfgBWrxzNGO6Gx69uWa/RbLfJS/K1auSyISZaXby/5Mw==",
+    "size": 17214,
+    "unpackedSize": 69052,
+    "shasum": "2cd955380572f197938ef80775919c821e301dc2",
+    "integrity": "sha512-zvOFlKyu5lDDJKxjGvQZwVWVuWmnUv1c2vrVy4tBkN+SvkyEFW1DV6qfPER0JuBRbp86fdHEIvHJhHQZxqeFFA==",
     "filename": "n8n-nodes-sentfromai-0.1.0.tgz",
     "files": [
       {
@@ -21,7 +21,7 @@
       },
       {
         "path": "README.md",
-        "size": 7830,
+        "size": 7898,
         "mode": 420
       },
       {
