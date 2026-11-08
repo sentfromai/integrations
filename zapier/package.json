@@ -1,6 +1,6 @@
 {
   "name": "sentfromai-zapier",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SentFromAI email inboxes, messages and drafts for Zapier.",
   "main": "index.js",
   "private": true,
