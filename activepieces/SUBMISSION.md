@@ -6,7 +6,7 @@ The connector source is merged in this repository. No upstream Activepieces pull
 
 On 9 November 2026, [Activepieces contribution policy](https://github.com/activepieces/activepieces/blob/main/CONTRIBUTING.md) says unsolicited external pull requests are temporarily paused and automatically closed. An invited contribution is an exception; do not open an unsolicited PR as the publication step.
 
-The supported alternative is a [custom piece built as a packed archive](https://www.activepieces.com/docs/build-pieces/misc/build-piece), then [uploaded to an authorized Activepieces platform](https://www.activepieces.com/docs/build-pieces/misc/publish-piece) using its admin API key. This installs the connector in that platform; it does not list it in the public catalog. Platform access and hosted QA are still required. The checkout integration checklist below applies to preparing that CLI build as well as a future invited upstream contribution.
+The supported alternative is a [custom piece built as a packed archive](https://www.activepieces.com/docs/build-pieces/misc/build-piece), then [uploaded to an authorized Activepieces platform](https://www.activepieces.com/docs/build-pieces/misc/publish-piece) using its admin API key. The 0.0.2 preview archive and checksum are available through the [installation guide](INSTALL.md). This installs the connector in that platform; it does not list it in the public catalog. Platform access and hosted QA are still required. The checkout integration checklist below is for a future invited upstream contribution; it is not required to install the bundled archive.
 
 Checked on 7 November 2026:
 
@@ -17,7 +17,7 @@ Checked on 7 November 2026:
 ## Already done in this directory
 
 - [x] Community piece shape: `src/index.ts`, `src/lib/auth.ts`, one action file per operation, one polling trigger.
-- [x] `package.json` name `@activepieces/piece-sentfromai`, version `0.0.1`.
+- [x] `package.json` name `@activepieces/piece-sentfromai`, version `0.0.2`.
 - [x] Secret-text API key, bearer requests, read-only `GET /account` validation.
 - [x] Actions for list inbox, create inbox, search emails, get email, send email, and reply.
 - [x] `audience` and `aiMetadata` on every action. Trigger `aiMetadata` describes one inbound message.
@@ -27,7 +27,8 @@ Checked on 7 November 2026:
 - [x] Poll requests the single documented 100-message page and dedupes with `pollingHelper`.
 - [x] `logo.png` is the existing SentFromAI mark, copied from the Make package's icon file.
 - [x] Authors lists the GitHub login `samuelar2` from this repository's commit history.
-- [x] Local `npm run typecheck` and `npm test` pass against the published SDK with mocked HTTP.
+- [x] Local typecheck and all 21 tests pass, including real TLS tests and repeated operation/TLS checks against the extracted archive.
+- [x] Self-contained archive includes bundled SDK dependencies, third-party notices, a checksum and a source manifest.
 
 ## Integrate with the target Activepieces checkout
 
@@ -49,7 +50,7 @@ Checked on 7 November 2026:
 These steps need a person with Activepieces maintainer or project access. They have not been done.
 
 - [ ] Obtain an authorized target platform for custom-piece installation, or an invitation from maintainers before an upstream PR.
-- [ ] Ask Activepieces to publish the logo to `https://cdn.activepieces.com/pieces/sentfromai.png`, or accept the review process they use for `logo.png`. The URL in `createPiece` will 404 until then.
+- [x] Use the verified SentFromAI-hosted logo at `https://sentfrom.ai/brand/sentfromai-icon.png`. A future upstream submission can follow the maintainers' CDN process.
 - [ ] After uploading the custom piece, confirm its version appears in an Activepieces cloud or self-hosted project. Installing and syncing pieces was not run here.
 - [ ] Connect a dedicated SentFromAI test key in that project. Confirm a wrong key fails and a valid key passes `GET /account`.
 - [ ] Run List Inboxes, Create Inbox with a unique local part, and confirm `address_taken` on a second create of the same name.
@@ -63,4 +64,4 @@ These steps need a person with Activepieces maintainer or project access. They h
 
 The SDK HTTP client changes `NODE_TLS_REJECT_UNAUTHORIZED` while requests are in flight. SentFromAI therefore uses native Node HTTPS with explicit certificate verification and an isolated agent, retaining the SDK's action and polling abstractions. It does not change global TLS settings or console logging, and does not follow redirects.
 
-On 9 November 2026, all 20 tests passed: 16 mocked operation tests and four tests against a real localhost TLS server. The latter reject untrusted certificates even when another piece disables global TLS checks, reject hostname mismatch, verify concurrent valid requests leave globals untouched, and reject redirects without forwarding credentials. Build and typecheck passed. These tests do not establish hosted Activepieces installation or real mail delivery.
+On 9 November 2026, all 21 tests passed: 16 mocked operation tests, four tests against a real localhost TLS server, and an archive test that repeats those 20 checks against the extracted bundle. TLS checks reject untrusted certificates even when another piece disables global TLS checks, reject hostname mismatch, verify concurrent valid requests leave globals untouched, and reject redirects without forwarding credentials. Build and typecheck passed. These tests do not establish hosted Activepieces installation or real mail delivery.

@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const { test, before, afterEach, after } = require('node:test');
 const nock = require('nock');
-const { sentfromai } = require('../dist/src/index.js');
+const { sentfromai } = require(process.env.SENTFROMAI_TEST_PIECE_PATH || '../dist/src/index.js');
 
 const KEY = 'unit-test-key';
 const origin = 'https://api.sentfrom.ai';

@@ -8,7 +8,7 @@ Connect [SentFromAI](https://sentfrom.ai) email inboxes to automation platforms 
 | Zapier | [zapier/](zapier/) | Instant inbound-email trigger, inbox trigger, email actions and search | [Invite-only preview](zapier/USER_GUIDE.md); hosted send/read/search/reply and same-key retries pass on 1.0.1; directory review pending |
 | Make | [make/](make/) | Custom-app connection and eight modules for inboxes and email | Updated source and contract checks pass; hosted update, scenario verification and publication pending |
 | Nango | [nango/](nango/) | API-key provider configuration and connection documentation | Provider schema and live API-key checks pass; [upstream PR](https://github.com/NangoHQ/nango/pull/8204) awaits maintainer review |
-| Activepieces | [activepieces/](activepieces/) | API-key connection, inbox and email actions, received-email polling trigger | 20 operation/TLS tests pass; custom-platform installation pending while unsolicited upstream PRs are paused |
+| Activepieces | [activepieces/](activepieces/) | API-key connection, inbox and email actions, received-email polling trigger | [Custom-piece preview](https://github.com/sentfromai/integrations/releases/tag/activepieces-v0.0.2) with [installation guide](activepieces/INSTALL.md); 21 checks pass, including extracted-archive regression tests; hosted installation pending |
 
 These packages are under development. A successful local build is not marketplace verification. Each platform directory documents its installation steps, remaining live tests and limitations.
 

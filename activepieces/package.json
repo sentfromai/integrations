@@ -1,6 +1,6 @@
 {
   "name": "@activepieces/piece-sentfromai",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "SentFromAI inboxes and email for Activepieces flows",
   "license": "MIT",
@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.lib.json",
     "typecheck": "tsc -p tsconfig.lib.json --noEmit",
-    "test": "npm run build && node --test test/*.test.cjs"
+    "test": "npm run build && node --test test/*.test.cjs",
+    "build:archive": "node scripts/build-archive.cjs"
   },
   "repository": {
     "type": "git",
@@ -40,7 +41,9 @@
   },
   "devDependencies": {
     "@types/node": "22.13.10",
+    "esbuild": "0.28.1",
     "nock": "14.0.10",
+    "supports-color": "8.1.1",
     "typescript": "5.9.2"
   }
 }
