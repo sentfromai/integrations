@@ -5,7 +5,7 @@ This file is the handoff for a future pull request to [activepieces/activepieces
 Checked on 7 November 2026:
 
 - npm `@activepieces/pieces-framework@0.32.0` requires `minimumSupportedRelease` of at least `0.82.0` for the current secret-text connection shape (`context.auth.secret_text`). This piece sets `0.82.0`.
-- npm `@activepieces/pieces-common@0.12.5` supplies `httpClient`, `AuthenticationType.BEARER_TOKEN`, and `pollingHelper` with `DedupeStrategy.TIMEBASED`.
+- npm `@activepieces/pieces-common@0.12.5` supplies the HTTP method types and `pollingHelper` with `DedupeStrategy.TIMEBASED`.
 - GitHub `main` piece-builder skill is ahead of those npm releases. `@activepieces/core-piece-types` and `@activepieces/core-utils` are not published. `PieceCategory` in the published SDK is imported from `@activepieces/shared`.
 
 ## Already done in this directory
@@ -15,7 +15,7 @@ Checked on 7 November 2026:
 - [x] Secret-text API key, bearer requests, read-only `GET /account` validation.
 - [x] Actions for list inbox, create inbox, search emails, get email, send email, and reply.
 - [x] `audience` and `aiMetadata` on every action. Trigger `aiMetadata` describes one inbound message.
-- [x] Send uses documented `client_id`. Reply does not invent one.
+- [x] Send and Reply accept the documented optional `client_id` (API schema refreshed 8 November 2026).
 - [x] `address_taken`, `address_reserved`, `client_id_conflict`, `send_outcome_pending`, plan-limit, auth, and rate-limit errors name a next step.
 - [x] Authorization header is not copied into thrown errors. Redirects are not followed.
 - [x] Poll requests the single documented 100-message page and dedupes with `pollingHelper`.
@@ -48,11 +48,13 @@ These steps need a person with Activepieces maintainer or project access. They h
 - [ ] Connect a dedicated SentFromAI test key in that project. Confirm a wrong key fails and a valid key passes `GET /account`.
 - [ ] Run List Inboxes, Create Inbox with a unique local part, and confirm `address_taken` on a second create of the same name.
 - [ ] Send one message to an address the account owner controls, with a stable Client ID. Run the step again with the same input and confirm `idempotent: true` and no second delivery. Then change the body, keep the Client ID, and confirm the conflict error.
-- [ ] Reply once to a received test message. Do not use platform retry. If the run times out, read the thread before replying again.
+- [ ] Reply to a received test message with a stable Client ID, then repeat identical input and confirm the same message is returned. If a run times out, inspect the thread and preserve the key.
 - [ ] Turn on Email Received, send one inbound message to the selected inbox, and confirm the next poll emits it once. Confirm the following poll does not emit it, and that an outbound message does not emit.
 - [ ] Remove `private: true` only if Activepieces' publish pipeline requires it. Do not `npm publish` this directory yourself; official pieces are published from the Activepieces repository.
 - [ ] Record the upstream PR URL and the hosted test notes back in this file after they exist.
 
 ## Known SDK behavior to mention in review
 
-`AxiosHttpClient` in pieces-common 0.12.5 sets `NODE_TLS_REJECT_UNAUTHORIZED=0` while a request is in flight. This piece restores the previous value afterward and does not follow redirects. TLS verification during the call is still the SDK client's behavior.
+The SDK HTTP client changes `NODE_TLS_REJECT_UNAUTHORIZED` while requests are in flight. SentFromAI therefore uses native Node HTTPS with explicit certificate verification and an isolated agent, retaining the SDK's action and polling abstractions. It does not change global TLS settings or console logging, and does not follow redirects.
+
+On 9 November 2026, all 20 tests passed: 16 mocked operation tests and four tests against a real localhost TLS server. The latter reject untrusted certificates even when another piece disables global TLS checks, reject hostname mismatch, verify concurrent valid requests leave globals untouched, and reject redirects without forwarding credentials. Build and typecheck passed. These tests do not establish hosted Activepieces installation or real mail delivery.

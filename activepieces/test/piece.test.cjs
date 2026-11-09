@@ -106,7 +106,7 @@ test('connection check rejects a bearer prefix and a bad key without exposing th
       .map((args) => args.map((arg) => (arg instanceof Error ? arg.message : String(arg))).join(' '))
       .join('\n');
     assert.equal(logged.includes(KEY), false);
-    assert.match(logged, /Request failed/);
+    assert.equal(logged, '', 'API failures must not emit credential-bearing HTTP diagnostics');
   } finally {
     console.error = original;
   }
@@ -247,7 +247,7 @@ test('client id conflict tells the caller not to mint a new key', async () => {
   );
 });
 
-test('reply stays on the documented path and does not send client_id', async () => {
+test('reply preserves a supplied retry key and encodes the message path', async () => {
   let body;
   let path;
   api()
@@ -264,11 +264,25 @@ test('reply stays on the documented path and does not send client_id', async () 
     text: 'Thanks',
     html: '',
     replyAll: true,
-    clientId: 'must-not-be-sent',
+    clientId: 'stable-reply-42',
   });
   assert.equal(path, '/v1/messages/id%2Fwith%3Fspecial/reply');
-  assert.deepEqual(body, { text: 'Thanks', reply_all: true });
-  assert.equal('client_id' in body, false);
+  assert.deepEqual(body, { text: 'Thanks', reply_all: true, client_id: 'stable-reply-42' });
+});
+
+
+test('reply returns dedupe evidence and preserves conflict guidance', async () => {
+  const input = { messageId: 'message-1', text: 'Thanks', replyAll: false, clientId: 'stable-reply-42' };
+  api().post('/v1/messages/message-1/reply', { text: 'Thanks', reply_all: false, client_id: 'stable-reply-42' })
+    .reply(201, { id: 'reply-1', idempotent: true });
+  assert.equal((await run('reply_to_email', input)).idempotent, true);
+  for (const code of ['client_id_conflict', 'send_outcome_pending']) {
+    api().post('/v1/messages/message-1/reply').reply(409, { error: code });
+    await assert.rejects(run('reply_to_email', input), /[Dd]o not (create|retry).*new client ID/);
+  }
+  api().post('/v1/messages/message-1/reply', { text: 'Thanks', reply_all: false })
+    .reply(201, { id: 'reply-2' });
+  assert.equal((await run('reply_to_email', { ...input, clientId: '' })).id, 'reply-2');
 });
 
 test('get email reads one message and preserves returned fields', async () => {

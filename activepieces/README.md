@@ -14,7 +14,7 @@ This directory is the isolated piece source. It has not been copied into the Act
 | Action | Search Emails | `GET /messages` | `query`, `mode`, `inbox_id`, and `limit` of 1–100. |
 | Action | Get Email | `GET /messages/{id}` | Returns the message record from the API. |
 | Action | Send Email | `POST /messages` | Recipients, subject, text and/or HTML, optional `client_id`. |
-| Action | Reply to Email | `POST /messages/{id}/reply` | `text` and/or `html`, and `reply_all`. No `client_id`. |
+| Action | Reply to Email | `POST /messages/{id}/reply` | `text` and/or `html`, `reply_all`, and optional `client_id`. |
 | Polling trigger | Email Received | `GET /messages?limit=100` | Inbound messages only, deduped by the SDK polling cursor. |
 
 The piece does not call drafts, forward, delete, webhooks, labels, lists, domains, attachments upload, agent signup, or claim-link endpoints.
@@ -43,9 +43,9 @@ The key is attached with the SDK bearer authentication helper and is sent only t
 
 ## Sending, replies, and conflicts
 
-Send accepts the documented `client_id` (1–255 UTF-8 bytes). Reuse the same value and the same content when retrying one email. Use a new value only for a different email. The API reports `client_id_conflict` when the body differs and `send_outcome_pending` when the outcome is unresolved; both errors say not to mint a replacement key.
+Send and Reply accept the documented `client_id` (1–255 UTF-8 bytes). Reuse the same value and the same content when retrying one email. Use a new value only for a different email. The API reports `client_id_conflict` when the body differs and `send_outcome_pending` when the outcome is unresolved; both errors say not to mint a replacement key.
 
-Reply uses `POST /messages/{id}/reply`, whose body is `text`, `html`, and `reply_all`. That schema has no `client_id`, so the action does not send one. Automatic Activepieces retry is hidden on create, send, and reply. After an uncertain reply, open the thread before sending another one.
+Reply uses `POST /messages/{id}/reply` and retains threading from the original message. Automatic Activepieces retry is hidden on create, send, and reply because retry keys are optional. After an uncertain result, inspect the thread and preserve the original key rather than generating a replacement.
 
 `409` with `address_taken` means the local part is already in use. `address_reserved` means it cannot be assigned. Choose a different local part. Plan limits such as `inbox_limit_reached` are returned as upgrade guidance rather than retried.
 

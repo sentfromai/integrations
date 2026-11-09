@@ -1,55 +1,12 @@
-import {
-  AuthenticationType,
-  HttpMethod,
-  httpClient,
-  type HttpMessageBody,
-} from '@activepieces/pieces-common';
-import { SentFromAiError, apiFailure, publicError, redact } from './errors';
+import { request } from 'node:https';
+import { HttpMethod, type HttpMessageBody } from '@activepieces/pieces-common';
+import { SentFromAiError, apiFailure, publicError } from './errors';
 import { apiKey, objectCollection } from './validate';
 
 export const SENTFROMAI_API_ORIGIN = 'https://api.sentfrom.ai';
 export const SENTFROMAI_API_BASE = `${SENTFROMAI_API_ORIGIN}/v1`;
 /** Largest page the messages endpoint is known to return. The live OpenAPI document has no cursor, offset, or page parameter. */
 export const MESSAGE_WINDOW = 100;
-
-const activeTokens = new Map<string, number>();
-let consoleDepth = 0;
-let originalConsoleError: typeof console.error | undefined;
-
-function redactSecrets(value: string): string {
-  return [...activeTokens.keys()].reduce((output, token) => redact(output, token), value);
-}
-
-function redactLogArg(value: unknown): unknown {
-  if (typeof value === 'string') return redactSecrets(value);
-  if (value instanceof Error) {
-    const copy = new Error(redactSecrets(value.message));
-    copy.name = value.name;
-    return copy;
-  }
-  return value;
-}
-
-function pushRedaction(token: string): () => void {
-  activeTokens.set(token, (activeTokens.get(token) ?? 0) + 1);
-  if (consoleDepth === 0) {
-    originalConsoleError = console.error;
-    console.error = (...args: unknown[]) => {
-      originalConsoleError?.(...args.map(redactLogArg));
-    };
-  }
-  consoleDepth += 1;
-  return () => {
-    consoleDepth -= 1;
-    const remaining = (activeTokens.get(token) ?? 1) - 1;
-    if (remaining <= 0) activeTokens.delete(token);
-    else activeTokens.set(token, remaining);
-    if (consoleDepth === 0 && originalConsoleError) {
-      console.error = originalConsoleError;
-      originalConsoleError = undefined;
-    }
-  };
-}
 
 function resourcePath(segments: string[]): string {
   return `/${segments.map((segment) => encodeURIComponent(segment)).join('/')}`;
@@ -63,22 +20,41 @@ export async function sentFromAiRequest<T extends HttpMessageBody>(options: {
   body?: Record<string, unknown>;
 }): Promise<T> {
   const key = apiKey(options.token);
-  const restoreLog = pushRedaction(key);
-  const previousTls = process.env['NODE_TLS_REJECT_UNAUTHORIZED'];
+  const url = new URL(`${SENTFROMAI_API_BASE}${resourcePath(options.segments)}`);
+  for (const [name, value] of Object.entries(options.query ?? {})) url.searchParams.set(name, value);
+  const body = options.body === undefined ? undefined : JSON.stringify(options.body);
   try {
-    const response = await httpClient.sendRequest<T>({
-      method: options.method,
-      url: `${SENTFROMAI_API_BASE}${resourcePath(options.segments)}`,
-      authentication: {
-        type: AuthenticationType.BEARER_TOKEN,
-        token: key,
-      },
-      headers: { 'User-Agent': 'SentFromAI-Activepieces/0.0.1' },
-      queryParams: options.query,
-      body: options.body,
-      timeout: 30000,
-      // A redirect must not receive the bearer key.
-      followRedirects: false,
+    const response = await new Promise<{ status: number; body: T }>((resolve, reject) => {
+      const req = request(url, {
+        method: options.method,
+        headers: {
+          Authorization: `Bearer ${key}`,
+          Accept: 'application/json',
+          'User-Agent': 'SentFromAI-Activepieces/0.0.1',
+          ...(body === undefined ? {} : {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(body),
+          }),
+        },
+        // Explicit verification also protects this call if another piece changes
+        // NODE_TLS_REJECT_UNAUTHORIZED or the process-wide default HTTPS agent.
+        rejectUnauthorized: true,
+        agent: false,
+        signal: AbortSignal.timeout(30000),
+      }, (res) => {
+        const chunks: Buffer[] = [];
+        res.on('data', (chunk: Buffer) => chunks.push(chunk));
+        res.on('error', reject);
+        res.on('end', () => {
+          const text = Buffer.concat(chunks).toString('utf8');
+          let parsed;
+          try { parsed = text.length ? JSON.parse(text) : undefined; }
+          catch { parsed = text; }
+          resolve({ status: res.statusCode ?? 0, body: parsed });
+        });
+      });
+      req.on('error', reject);
+      req.end(body);
     });
     if (response.status < 200 || response.status >= 300) {
       throw apiFailure(response.status, response.body, key);
@@ -87,10 +63,6 @@ export async function sentFromAiRequest<T extends HttpMessageBody>(options: {
   } catch (error) {
     if (error instanceof SentFromAiError) throw error;
     throw publicError(error, key);
-  } finally {
-    if (previousTls === undefined) delete process.env['NODE_TLS_REJECT_UNAUTHORIZED'];
-    else process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = previousTls;
-    restoreLog();
   }
 }
 

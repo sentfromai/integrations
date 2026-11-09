@@ -3,7 +3,7 @@ import { HttpMethod } from '@activepieces/pieces-common';
 import { sentFromAiAuth } from '../auth';
 import { sentFromAiRequest } from '../common/client';
 import { htmlBody, textBody, writeErrorHandling } from '../common/fields';
-import { messageContent, requiredText } from '../common/validate';
+import { clientId, messageContent, requiredText } from '../common/validate';
 
 export const replyToEmailAction = createAction({
   name: 'reply_to_email',
@@ -12,7 +12,7 @@ export const replyToEmailAction = createAction({
   audience: 'both',
   aiMetadata: {
     description:
-      'Reply in the thread of an existing SentFromAI message. The reply endpoint accepts text, html, and reply_all only; it has no client_id field, so this action does not send one and automatic retry is hidden. After an uncertain failure, read the thread before replying again.',
+      'Reply in the thread of an existing SentFromAI message. Supply a stable Client ID for the exact reply. Retry only with the same key and identical content; changed content or an unresolved send returns a conflict. Automatic retry remains hidden because a reply without a key is not idempotent.',
     idempotent: false,
   },
   auth: sentFromAiAuth,
@@ -25,6 +25,11 @@ export const replyToEmailAction = createAction({
     }),
     text: textBody,
     html: htmlBody,
+    clientId: Property.ShortText({
+      displayName: 'Client ID',
+      description: 'Optional retry key, 1–255 UTF-8 bytes. Reuse it only with identical reply content. Do not switch keys after an uncertain send.',
+      required: false,
+    }),
     replyAll: Property.Checkbox({
       displayName: 'Reply to all',
       description: 'Include the original recipients except the sending inbox.',
@@ -34,6 +39,7 @@ export const replyToEmailAction = createAction({
   },
   async run(context) {
     const values = context.propsValue;
+    const idempotencyKey = clientId(values.clientId);
     return sentFromAiRequest({
       token: context.auth.secret_text,
       method: HttpMethod.POST,
@@ -41,6 +47,7 @@ export const replyToEmailAction = createAction({
       body: {
         ...messageContent(values.text, values.html),
         reply_all: values.replyAll === true,
+        ...(idempotencyKey ? { client_id: idempotencyKey } : {}),
       },
     });
   },
