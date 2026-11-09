@@ -69,6 +69,31 @@ test('reply-all explicitly forwards true', async () => {
   await appTester(App.creates.reply_to_email.operation.perform, bundle({ message_id: samples.message.id, html: '<p>Thanks everyone</p>', reply_all: true }));
 });
 
+test('reply preserves caller retry key and returns the server idempotent result', async () => {
+  const input = { message_id: samples.message.id, text: 'Approved reply', reply_all: false, client_id: 'support-reply:event-123' };
+  const body = { text: input.text, reply_all: false, client_id: input.client_id };
+  api().post(`/v1/messages/${samples.message.id}/reply`, body).reply(201, samples.sent);
+  api().post(`/v1/messages/${samples.message.id}/reply`, body).reply(201, { ...samples.sent, idempotent: true });
+  const first = await appTester(App.creates.reply_to_email.operation.perform, bundle(input));
+  const repeated = await appTester(App.creates.reply_to_email.operation.perform, bundle(input));
+  assert.equal(repeated.id, first.id);
+  assert.equal(repeated.idempotent, true);
+});
+
+test('reply surfaces content-conflict and uncertain-send errors without changing the key', async () => {
+  for (const code of ['client_id_conflict', 'send_outcome_pending']) {
+    const input = { message_id: samples.message.id, text: 'Approved reply', client_id: 'support-reply:event-123' };
+    api().post(`/v1/messages/${samples.message.id}/reply`, { text: input.text, reply_all: false, client_id: input.client_id })
+      .reply(409, { error: code });
+    await assert.rejects(appTester(App.creates.reply_to_email.operation.perform, bundle(input)), (error) => {
+      const detail = JSON.parse(error.message);
+      assert.equal(detail.status, 409);
+      assert.equal(detail.message, code);
+      return true;
+    });
+  }
+});
+
 test('create inbox uses optional verified domain', async () => {
   const data = { local_part: 'assistant', display_name: 'Order Assistant', domain_id: 'domain-id' };
   api().post('/v1/inboxes', data).reply(201, samples.inbox);

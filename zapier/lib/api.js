@@ -6,7 +6,7 @@ const addAuth = (request, z, bundle) => {
   if (url.origin === 'https://api.sentfrom.ai' && url.pathname.startsWith('/v1/')) {
     request.headers.Authorization = `Bearer ${bundle.authData.api_key}`;
     request.headers.Accept = 'application/json';
-    request.headers['User-Agent'] = 'SentFromAI-Zapier/1.0.0';
+    request.headers['User-Agent'] = 'SentFromAI-Zapier/1.0.1';
   }
   return request;
 };
