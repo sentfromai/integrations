@@ -2,7 +2,7 @@
 
 Connect your SentFromAI inbox to a workflow that receives email, requests your approval, and saves an unsent reply draft.
 
-**Release status: invite-only preview.** This guide is being prepared for the existing private integration. Its installation link is awaiting verification. A verified link will be added here before this guide is distributed. This is not a Zapier App Directory listing or a published Zap template.
+**Release status: invite-only preview.** [Open the SentFromAI invitation](https://zapier.com/developer/public-invite/249349/7f6a0b40c952b3a9fecdccfa367118fd/) to add the integration to your Zapier account. Zapier has not yet reviewed or approved it for the App Directory. This is a written setup guide, not a published Zap template.
 
 ## What you need
 
@@ -12,7 +12,7 @@ Connect your SentFromAI inbox to a workflow that receives email, requests your a
 
 ## Connect your account
 
-1. Accept the verified SentFromAI invitation in the Zapier account where you will build the workflow.
+1. Accept the SentFromAI invitation in the Zapier account where you will build the workflow.
 2. In the [SentFromAI dashboard](https://console.sentfrom.ai/inboxes), create or select an inbox. Keep its address handy. You only need to create the inbox once.
 3. Create a key on the [API keys page](https://console.sentfrom.ai/keys).
 4. Create a Zap and select **SentFromAI**. Connect a new account and paste the key into **API Key**, without the word `Bearer`.
@@ -92,7 +92,7 @@ Use a different key for every intended send or reply across your workspace, incl
 
 | What you see | What to check |
 | --- | --- |
-| SentFromAI is missing from the app picker | Accept the verified invitation using the same Zapier account. A private integration is not discoverable in the public directory. |
+| SentFromAI is missing from the app picker | Accept the invitation using the same Zapier account. A private integration is not discoverable in the public directory. |
 | Invalid or revoked API key | Reconnect using a current key from the intended workspace. |
 | `address_taken` when creating an inbox | The requested address already exists. Choose it from the inbox dropdown for sending/drafting, or use a different local part if you need a new inbox. Re-running **Create Inbox** with the same local part does not reuse, replace, or overwrite it. |
 | Inbox limit reached | Check your SentFromAI plan and existing inboxes. |

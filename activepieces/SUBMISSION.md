@@ -1,6 +1,12 @@
 # Activepieces submission checklist
 
-This file is the handoff for a future pull request to [activepieces/activepieces](https://github.com/activepieces/activepieces). No upstream pull request has been opened. This repository's review PR only adds the isolated piece.
+The connector source is merged in this repository. No upstream Activepieces pull request has been opened.
+
+## Current distribution route
+
+On 9 November 2026, [Activepieces contribution policy](https://github.com/activepieces/activepieces/blob/main/CONTRIBUTING.md) says unsolicited external pull requests are temporarily paused and automatically closed. An invited contribution is an exception; do not open an unsolicited PR as the publication step.
+
+The supported alternative is a [custom piece built as a packed archive](https://www.activepieces.com/docs/build-pieces/misc/build-piece), then [uploaded to an authorized Activepieces platform](https://www.activepieces.com/docs/build-pieces/misc/publish-piece) using its admin API key. This installs the connector in that platform; it does not list it in the public catalog. Platform access and hosted QA are still required. The checkout integration checklist below applies to preparing that CLI build as well as a future invited upstream contribution.
 
 Checked on 7 November 2026:
 
@@ -23,7 +29,7 @@ Checked on 7 November 2026:
 - [x] Authors lists the GitHub login `samuelar2` from this repository's commit history.
 - [x] Local `npm run typecheck` and `npm test` pass against the published SDK with mocked HTTP.
 
-## Do this in the Activepieces monorepo before opening the upstream PR
+## Integrate with the target Activepieces checkout
 
 - [ ] Copy `activepieces/` to `packages/pieces/community/sentfromai`.
 - [ ] Point dependencies at the checkout's `workspace:*` packages instead of the pinned npm versions.
@@ -42,16 +48,16 @@ Checked on 7 November 2026:
 
 These steps need a person with Activepieces maintainer or project access. They have not been done.
 
-- [ ] Open the upstream pull request from a fork. This integrations repository PR is not that submission.
+- [ ] Obtain an authorized target platform for custom-piece installation, or an invitation from maintainers before an upstream PR.
 - [ ] Ask Activepieces to publish the logo to `https://cdn.activepieces.com/pieces/sentfromai.png`, or accept the review process they use for `logo.png`. The URL in `createPiece` will 404 until then.
-- [ ] After merge, confirm the piece version appears in an Activepieces cloud or self-hosted project. Installing and syncing pieces was not run here.
+- [ ] After uploading the custom piece, confirm its version appears in an Activepieces cloud or self-hosted project. Installing and syncing pieces was not run here.
 - [ ] Connect a dedicated SentFromAI test key in that project. Confirm a wrong key fails and a valid key passes `GET /account`.
 - [ ] Run List Inboxes, Create Inbox with a unique local part, and confirm `address_taken` on a second create of the same name.
 - [ ] Send one message to an address the account owner controls, with a stable Client ID. Run the step again with the same input and confirm `idempotent: true` and no second delivery. Then change the body, keep the Client ID, and confirm the conflict error.
 - [ ] Reply to a received test message with a stable Client ID, then repeat identical input and confirm the same message is returned. If a run times out, inspect the thread and preserve the key.
 - [ ] Turn on Email Received, send one inbound message to the selected inbox, and confirm the next poll emits it once. Confirm the following poll does not emit it, and that an outbound message does not emit.
-- [ ] Remove `private: true` only if Activepieces' publish pipeline requires it. Do not `npm publish` this directory yourself; official pieces are published from the Activepieces repository.
-- [ ] Record the upstream PR URL and the hosted test notes back in this file after they exist.
+- [ ] Remove `private: true` only if Activepieces' publish pipeline requires it. Do not publish this package under the platform-owned `@activepieces` npm namespace. Use the documented custom-piece upload route for your own platform.
+- [ ] Record the authorized platform installation and hosted test notes, and any future invited upstream PR, after they exist.
 
 ## Known SDK behavior to mention in review
 
