@@ -9,7 +9,7 @@ const originalRequest = https.request;
 const originalConsole = console.error;
 const originalTls = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
 let directory, server, cert, port;
-let optionsForFixture = {}, received = 0, redirectRequests = 0;
+let optionsForFixture = {}, received = 0, redirectRequests = 0, redirectMode = false;
 const token = 'synthetic-tls-test-key';
 
 // Only the destination is routed to a local TLS server. The connector's TLS
@@ -22,8 +22,10 @@ https.request = (url, options, callback) => {
     ...options, servername: 'localhost', ...optionsForFixture,
   }, callback);
 };
-const { sentFromAiRequest } = require('../dist/src/lib/common/client.js');
-const read = () => sentFromAiRequest({ token, method: 'GET', segments: ['account'] });
+const { sentfromai } = require(process.env.SENTFROMAI_TEST_PIECE_PATH || '../dist/src/index.js');
+const read = () => sentfromai.getAction('list_inboxes').run({
+  auth: { type: 'SECRET_TEXT', secret_text: token }, propsValue: {},
+});
 
 before(async () => {
   directory = fs.mkdtempSync(path.join(os.tmpdir(), 'sentfromai-activepieces-tls-'));
@@ -35,15 +37,15 @@ before(async () => {
   server = https.createServer({ key: fs.readFileSync(keyPath), cert }, (req, res) => {
     received++;
     assert.equal(req.headers.authorization, `Bearer ${token}`);
-    if (req.url === '/v1/redirect') {
+    if (redirectMode) {
       redirectRequests++;
       res.writeHead(302, { Location: `https://localhost:${port}/should-not-follow` });
       res.end();
       return;
     }
-    assert.equal(req.url, '/v1/account');
+    assert.equal(req.url, '/v1/inboxes');
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ name: 'Synthetic TLS workspace' }));
+    res.end(JSON.stringify({ inboxes: [{ id: 'synthetic-tls-inbox' }] }));
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   port = server.address().port;
@@ -77,15 +79,16 @@ test('concurrent trusted requests work without changing process TLS or logging g
   delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
   optionsForFixture = { ca: cert };
   const results = await Promise.all([read(), read()]);
-  assert.deepEqual(results, [{ name: 'Synthetic TLS workspace' }, { name: 'Synthetic TLS workspace' }]);
+  assert.deepEqual(results, [[{ id: 'synthetic-tls-inbox' }], [{ id: 'synthetic-tls-inbox' }]]);
   assert.equal(process.env.NODE_TLS_REJECT_UNAUTHORIZED, undefined);
   assert.equal(console.error, originalConsole);
 });
 
 test('real HTTPS redirects fail without forwarding the key to the redirect destination', async () => {
   optionsForFixture = { ca: cert };
+  redirectMode = true;
   const before = received;
-  await assert.rejects(() => sentFromAiRequest({ token, method: 'GET', segments: ['redirect'] }), /does not follow redirects/);
+  await assert.rejects(read, /does not follow redirects/);
   assert.equal(received, before + 1);
   assert.equal(redirectRequests, 1);
 });

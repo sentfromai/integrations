@@ -13,7 +13,7 @@ export const sentfromai = createPiece({
   displayName: 'SentFromAI',
   description: 'Create inboxes and send, receive, search, and reply to email for AI agents.',
   minimumSupportedRelease: '0.82.0',
-  logoUrl: 'https://cdn.activepieces.com/pieces/sentfromai.png',
+  logoUrl: 'https://sentfrom.ai/brand/sentfromai-icon.png',
   categories: [PieceCategory.COMMUNICATION, PieceCategory.ARTIFICIAL_INTELLIGENCE],
   auth: sentFromAiAuth,
   authors: ['samuelar2'],

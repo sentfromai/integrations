@@ -2,7 +2,7 @@
 
 Activepieces community piece for [SentFromAI](https://sentfrom.ai). It gives a flow an email inbox: list and create inboxes, search and read messages, send and reply, and poll for mail that has arrived.
 
-This directory is the isolated piece source. It has not been copied into the Activepieces monorepo, installed on an Activepieces project, or published. Local build, typecheck, and mocked tests exercise the published piece SDK. They do not send live email.
+Version 0.0.2 is a preview custom piece. The [release archive](https://github.com/sentfromai/integrations/releases/tag/activepieces-v0.0.2) bundles its runtime dependencies and can be uploaded by an authorized Activepieces platform administrator. Follow the [installation guide](https://github.com/sentfromai/integrations/blob/main/activepieces/INSTALL.md). It is not listed in the public Activepieces catalog, and hosted installation and live flow verification are still pending.
 
 ## Operations
 
@@ -17,21 +17,22 @@ This directory is the isolated piece source. It has not been copied into the Act
 | Action | Reply to Email | `POST /messages/{id}/reply` | `text` and/or `html`, `reply_all`, and optional `client_id`. |
 | Polling trigger | Email Received | `GET /messages?limit=100` | Inbound messages only, deduped by the SDK polling cursor. |
 
-The piece does not call drafts, forward, delete, webhooks, labels, lists, domains, attachments upload, agent signup, or claim-link endpoints.
+All API paths above are relative to `https://api.sentfrom.ai/v1`. The piece does not call drafts, forward, delete, webhooks, labels, lists, domains, attachments upload, agent signup, or claim-link endpoints.
 
 ## Install for local development
 
-Node.js 22 or newer is required. No SentFromAI credential is required for the mocked tests.
+Node.js 22 or newer is required; validation uses Node.js 22. No SentFromAI credential is required for the tests.
 
 ```sh
 npm ci --ignore-scripts
 npm run typecheck
 npm test
+npm run build:archive
 ```
 
-`npm test` compiles with TypeScript against `@activepieces/pieces-framework` 0.32.0 and `@activepieces/pieces-common` 0.12.5, then runs the Node test runner. HTTP is mocked with Nock and live network access is disabled.
+`npm test` compiles against `@activepieces/pieces-framework` 0.32.0 and `@activepieces/pieces-common` 0.12.5. It runs 16 mocked operation tests, four tests against a real local HTTPS server, and an archive test. The archive test extracts the package, checks loading without external runtime packages, and repeats all 20 operation/TLS tests against the bundled code. Tests do not contact SentFromAI or send live email.
 
-To try the piece in a self-hosted Activepieces checkout, copy this directory to `packages/pieces/community/sentfromai`, replace the npm dependency versions with that checkout's workspace packages, and register `@activepieces/piece-sentfromai` in the monorepo `tsconfig.base.json`. The [submission checklist](SUBMISSION.md) lists the differences between this published SDK and current Activepieces main. Do not publish this package to npm from this repository.
+The archive, checksum and source manifest are written to `build/archive/`. For a release, run `SENTFROMAI_RELEASE=1 npm run build:archive` from a clean committed checkout. The build preserves third-party license notices, allows only Node built-ins as external dependencies, and enforces the upstream 5 MiB bundle limit. The [submission checklist](https://github.com/sentfromai/integrations/blob/main/activepieces/SUBMISSION.md) covers hosted QA and a future invited upstream contribution. Do not publish under the platform-owned `@activepieces` npm namespace.
 
 ## Connect
 
@@ -39,7 +40,7 @@ To try the piece in a self-hosted Activepieces checkout, copy this directory to 
 2. In Activepieces, add the SentFromAI connection and paste the key without a `Bearer` prefix.
 3. The connection check calls `GET /v1/account`. It does not send mail.
 
-The key is attached with the SDK bearer authentication helper and is sent only to `https://api.sentfrom.ai`. Requests set `followRedirects: false`. Error text returned to the flow has the key and `Bearer` values removed. The published HTTP client logs failed response bodies; this piece redacts the key in that log line as well.
+The key is sent as a Bearer token only to `https://api.sentfrom.ai`. Native Node HTTPS requests explicitly verify certificates and hostnames, use an isolated agent, and do not follow redirects. Error text returned to the flow has the key and `Bearer` values removed. The piece does not modify global TLS settings or console logging.
 
 ## Sending, replies, and conflicts
 
@@ -51,13 +52,13 @@ Reply uses `POST /messages/{id}/reply` and retains threading from the original m
 
 ## Received-email polling
 
-Activepieces polling runs on the platform schedule, about every five minutes. On enable, `@activepieces/pieces-common` 0.12.5 stores the current time. Later polls call `GET /messages` once with `limit=100` and the optional inbox ID. The live OpenAPI document (checked 7 November 2026) has `query`, `mode`, `inbox_id`, and `limit` only. This trigger does not send `page`, `cursor`, `offset`, or `since`.
+Polling runs on your Activepieces platform's schedule. On enable, bundled `@activepieces/pieces-common` 0.12.5 stores the current time. Later polls call `GET /messages` once with `limit=100` and the optional inbox ID. The live OpenAPI document (checked 7 November 2026) has `query`, `mode`, `inbox_id`, and `limit` only. This trigger does not send `page`, `cursor`, `offset`, or `since`.
 
 Only `direction: inbound` items are candidates. `received_at`, then `created_at`, becomes the SDK time-based dedupe value. `pollingHelper` emits an item only when that time is strictly newer than the stored cursor, so the same page does not fire again. A list item without either timestamp is read with `GET /messages/{id}`. If that record still has no timestamp, the poll throws and the cursor stays where it was.
 
 The 100-message response includes outbound mail. More than 100 new messages between polls can push an inbound message out of the window; this trigger cannot recover it. It is not a historical backfill. Webhooks are the API's push alternative and are not implemented here. The trigger test sample returns at most five newest inbound messages, which is the SDK test helper's cap.
 
-`pieces-common` 0.12.5 resets the cursor on every enable, including a republish. Current Activepieces main preserves the cursor when the full trigger context is passed and `isRepublish` is set. This source passes that full context, so the newer helper keeps the cursor without a further code change. The published helper used by these tests does not.
+The bundled `pieces-common` 0.12.5 resets the cursor on every enable, including a republish; messages arriving during a disabled interval can be skipped. Upgrading the host platform does not replace the helper embedded in this archive. A future piece release needs a newer helper and regression testing to change that behavior.
 
 ## API sources
 
@@ -72,6 +73,6 @@ SDK references:
 
 ## License
 
-[MIT](../LICENSE). SentFromAI branding remains the property of its owner. Activepieces is a trademark of its owner.
+[MIT](https://github.com/sentfromai/integrations/blob/main/LICENSE). The archive includes `LICENSE` and `THIRD_PARTY_NOTICES.txt`. SentFromAI branding remains the property of its owner. Activepieces is a trademark of its owner.
 
 Support: support@sentfrom.ai. Partner contact: Samuel Arregger-Robson, samuel@sentfrom.ai.

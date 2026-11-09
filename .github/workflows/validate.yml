@@ -63,3 +63,11 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run typecheck
       - run: npm test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: activepieces-custom-piece
+          if-no-files-found: error
+          path: |
+            activepieces/build/archive/*.tgz
+            activepieces/build/archive/SHA256SUMS
+            activepieces/build/archive/release-manifest.json
