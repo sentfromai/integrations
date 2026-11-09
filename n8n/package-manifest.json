@@ -3,15 +3,15 @@
     "id": "n8n-nodes-sentfromai@0.1.0",
     "name": "n8n-nodes-sentfromai",
     "version": "0.1.0",
-    "size": 17062,
-    "unpackedSize": 67332,
-    "shasum": "7bb8f89f188d41373fea1c3c883531950f358530",
-    "integrity": "sha512-ZWYMol8cpNaX7ga56LRboeMeLAkPqWuvSvNssOQPEPn2i61oRH2P+trdgmLSJydFTTrCKdTVeCTZwDhxuD0h5g==",
+    "size": 17214,
+    "unpackedSize": 69052,
+    "shasum": "2cd955380572f197938ef80775919c821e301dc2",
+    "integrity": "sha512-zvOFlKyu5lDDJKxjGvQZwVWVuWmnUv1c2vrVy4tBkN+SvkyEFW1DV6qfPER0JuBRbp86fdHEIvHJhHQZxqeFFA==",
     "filename": "n8n-nodes-sentfromai-0.1.0.tgz",
     "files": [
       {
         "path": "CHANGELOG.md",
-        "size": 280,
+        "size": 352,
         "mode": 420
       },
       {
@@ -21,7 +21,7 @@
       },
       {
         "path": "README.md",
-        "size": 7707,
+        "size": 7898,
         "mode": 420
       },
       {
@@ -61,12 +61,12 @@
       },
       {
         "path": "dist/nodes/SentFromAi/SentFromAi.node.js",
-        "size": 17386,
+        "size": 18286,
         "mode": 420
       },
       {
         "path": "dist/nodes/SentFromAi/SentFromAi.node.js.map",
-        "size": 11531,
+        "size": 12088,
         "mode": 420
       },
       {

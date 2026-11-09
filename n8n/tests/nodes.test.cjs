@@ -121,7 +121,7 @@ test("invalid recipients, empty body, and blank subject never reach API", async 
   }
 });
 
-test("reply keeps threading on API endpoint and does not invent unsupported client_id", async () => {
+test("reply keeps threading on API endpoint and omits an unset optional client_id", async () => {
   const { context, calls } = execution(
     {
       resource: "message",
@@ -139,6 +139,28 @@ test("reply keeps threading on API endpoint and does not invent unsupported clie
     "https://api.sentfrom.ai/v1/messages/id%2Fwith%3Fspecial/reply",
   );
   assert.deepEqual(calls[0].body, { text: "Thanks", reply_all: true });
+});
+
+test("reply passes a stable caller retry key and returns API duplicate-suppression evidence", async () => {
+  const { context, calls } = execution(
+    {
+      resource: "message",
+      operation: "reply",
+      messageId: "source-message",
+      text: "Thanks",
+      replyFields: { clientId: "case-42-reply" },
+    },
+    [{ id: "existing-reply", thread_id: "thread-1", idempotent: true }],
+  );
+  const result = await node.execute.call(context);
+  assert.deepEqual(calls[0].body, {
+    text: "Thanks",
+    reply_all: false,
+    client_id: "case-42-reply",
+  });
+  assert.equal(calls.length, 1);
+  assert.equal(result[0][0].json.idempotent, true);
+  assert.equal(result[0][0].json.id, "existing-reply");
 });
 
 test("search uses documented query parameter and exposes server fallback mode", async () => {
