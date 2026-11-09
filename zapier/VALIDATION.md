@@ -35,3 +35,13 @@ Two additional mocked tests cover identical-key retry results and both documente
 - Documentation: relative links and `git diff --check` pass. The installation link and compound approval workflow remain unverified.
 
 Create Inbox remains unchanged: an existing address produces a conflict instead of silently reusing or overwriting an inbox. The reported failing Zap still needs classification from actual run evidence.
+
+## Hosted 1.0.0 validation observed on 8 November
+
+The existing version's portal validation reports **zero errors, four publishing tasks, and 13 warnings**. The count is not a count of 17 runtime failures. The publishing tasks concern New Email Received's real polling sample/latest-run output comparisons, a matching-domain admin, and three users with live Zaps. The exact sample comparison details still need inspection before a source change is justified.
+
+The warnings are eight D028 input-cleaning recommendations and five D004 dropdown suggestions. `cleanInputData: true` is retained deliberately for compatibility with existing empty/null/list handling. Caller-generated retry keys must remain values supplied for an intended send, not dropdowns of existing records. Other message/domain ID fields can accept mapped upstream values; further dropdown improvements are separate from the blocking publishing tasks. Candidate 1.0.1's additional retry-key field may add another dropdown recommendation when that version is validated.
+
+The [official validation reference](https://docs.zapier.com/integrations/publish/integration-checks-reference) distinguishes Errors and Publishing Tasks from non-blocking Warnings. Run Validation from the hosted Version Overview, then inspect each task by its ID. S001 asks for three users with live successful Zaps; S002 and T001 require enabled-Zap coverage and successful history for each visible operation. Local tests, definition-only validation, and remote CLI invocations are not substitutes for that history.
+
+The prepared hosted smoke script has not been run. Its offline tests verify persistent retry keys, recipient scope, uncertain-outcome stops, and output parsing; they do not establish hosted readiness.

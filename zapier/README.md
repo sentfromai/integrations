@@ -39,6 +39,19 @@ npm run build
 
 Tests use the official `createAppTester` and Nock; all external networking is disabled. The local validator runs the official schema checks. The build script reuses installed dependencies and skips remote validation after local validation, producing `build/build.zip` and `build/source.zip`. These archives are local build outputs, not published integrations.
 
+### Controlled hosted smoke test
+
+`scripts/hosted-smoke.cjs` is prepared for an existing two-inbox test fixture and an existing Zapier connection to that same workspace. It has not been executed against the hosted candidate. The `prepare` subcommand only writes a private plan with stable send/reply keys; the `run` subcommand makes real hosted calls and must be used only after the candidate is deployed and the test is authorized.
+
+```sh
+node scripts/hosted-smoke.cjs prepare --fixture PRIVATE_FIXTURE_PATH --state PRIVATE_STATE_PATH
+node scripts/hosted-smoke.cjs run --state PRIVATE_STATE_PATH --authentication-id EXISTING_TEST_CONNECTION_ID
+```
+
+The script pins app 249349 and version 1.0.1, checks the hosted connection against both approved inboxes, and limits writes to one intended message and one intended reply between them, plus same-key replay requests. It stores request inputs and write markers before invocation. A lost or unparseable write response stops execution for manual reconciliation; preparing a fresh state is not a recovery method. Saved response results are reused on resume. No new accounts, inboxes, drafts, hooks, or invitations are created.
+
+Keep fixture, state, and logs outside the repository with private permissions. The script captures CLI output privately and prints only status. It deliberately omits non-idempotent draft/inbox creation and webhook lifecycle tests. Remote CLI execution is separate from successful runs of enabled Zaps required by the publishing checks.
+
 ## Delivery and API constraints
 
 - New Email Received uses REST hooks; it does not poll the latest-100 message endpoint for live events. Editor sample loading only checks the most recent 100 messages and hydrates up to three inbound samples. If none appear, receive a fresh test email in the chosen inbox.
