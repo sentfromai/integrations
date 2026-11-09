@@ -3,7 +3,7 @@
 Give your n8n workflows and AI agents an email inbox with [SentFromAI](https://sentfrom.ai).
 Create inboxes, send and reply to messages, search email, and start workflows when email arrives or delivery status changes.
 
-This community package integrates the [SentFromAI API](https://sentfrom.ai/docs). [n8n](https://n8n.io) is a workflow automation platform.
+This community package integrates the [SentFromAI API](https://docs.sentfrom.ai). [n8n](https://n8n.io) is a workflow automation platform.
 
 ## Installation
 

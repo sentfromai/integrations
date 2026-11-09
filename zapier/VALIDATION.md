@@ -45,3 +45,15 @@ The warnings are eight D028 input-cleaning recommendations and five D004 dropdow
 The [official validation reference](https://docs.zapier.com/integrations/publish/integration-checks-reference) distinguishes Errors and Publishing Tasks from non-blocking Warnings. Run Validation from the hosted Version Overview, then inspect each task by its ID. S001 asks for three users with live successful Zaps; S002 and T001 require enabled-Zap coverage and successful history for each visible operation. Local tests, definition-only validation, and remote CLI invocations are not substitutes for that history.
 
 The prepared hosted smoke script has not been run. Its offline tests verify persistent retry keys, recipient scope, uncertain-outcome stops, and output parsing; they do not establish hosted readiness.
+
+
+## Hosted candidate update, 9 November
+
+Version 1.0.1 is uploaded to existing app 249349. A remote CLI invocation of New Inbox succeeded. Its existing saved connection belongs to a separate synthetic test workspace, so the new controlled send/reply script has not been run against that connection. The prepared two-inbox fixture remains unchanged.
+
+The reported Create Inbox failure in Zap 386029552, run `01bd4652-736f-ada4-5b1a-7ca6fdf82644`, was inspected in Zap History: `address_taken` for a previously created local part. A later successful run is visible. The failure was not replayed and the connector's conflict behavior was preserved.
+
+
+A later controlled run used that existing Zapier QA connection, restricted to its two original named test inboxes. Hosted 1.0.1 New Inbox, Send Email, Get Message, Find Message and Reply to Email passed. One email and one reply were delivered between those inboxes with verified bodies/recipients. Same-key send and reply replay calls returned the original IDs with `idempotent: true`. The reply stayed in the original thread. No new connection or production recipient was used.
+
+The public invitation page was opened and accepted in the existing developer account. Independent non-admin onboarding remains part of preview testing. A user-scoped migration job completed, and the existing email-trigger Zap visibly uses 1.0.1 in both steps. These checks do not establish all operation histories, negative webhook tests, three-user adoption or App Directory approval.
