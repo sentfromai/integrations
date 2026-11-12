@@ -31,4 +31,4 @@ A future creators.dify.ai workflow is a separate follow-up once the plugin is av
 
 The service source audited was commit `02e9a1cb1b6525bc59c838c072a42687e21244f4`; the same API release was active during the checks. Allowlisted production metadata confirmed Railway API/PostgreSQL in `us-west2`, AWS configured `eu-west-1`, an S3 bucket region response of `eu-west-1`, and embedding/telemetry integrations enabled. No customer S3 objects were fetched for this audit.
 
-General mail retention, raw-object deletion and backup purge deadlines were not verified. These gaps are disclosed in `PRIVACY.md`; the plugin does not invent a purge promise or claim all processing stays in one jurisdiction.
+The owner confirmed that ordinary email has no automatic expiry: users control deletion or request account deletion. Raw-object deletion and backup purge deadlines were not verified; those limits are disclosed in `PRIVACY.md`. The plugin does not invent a purge promise or claim all processing stays in one jurisdiction.

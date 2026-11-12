@@ -57,7 +57,7 @@ An email reply or an LLM reading “approved” is not authenticated approval by
 
 ## Data handling
 
-**Email bodies are stored by SentFromAI and subjects/plain-text bodies are sent to OpenRouter for server-side embedding/indexing, including when the workflow chooses keyword search.** The main API/database are in the US; the checked AWS email/object configuration is in Ireland. Dify workflow inputs/results may also reach your configured model providers. There is no fixed general email-retention or backup-deletion deadline confirmed for this release. Read [PRIVACY.md](PRIVACY.md) before connecting customer mail.
+**Email bodies are stored by SentFromAI and subjects/plain-text bodies are sent to OpenRouter for server-side embedding/indexing, including when the workflow chooses keyword search.** The main API/database are in the US; the checked AWS email/object configuration is in Ireland. Dify workflow inputs/results may also reach your configured model providers. Ordinary email has no automatic expiry: customers use the service's deletion controls or request account deletion. Raw-object/backup deletion deadlines have not been confirmed. Read [PRIVACY.md](PRIVACY.md) before connecting customer mail.
 
 ## Development
 
