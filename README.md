@@ -4,6 +4,7 @@ Connect [SentFromAI](https://sentfrom.ai) email inboxes to automation platforms 
 
 | Platform | Source | Included capabilities | Release status |
 | --- | --- | --- | --- |
+| Dify | [dify/](dify/) | Nine tools for account status, inboxes, search/read, send/reply and unsent drafts | Packaged with official CLI; SDK/contract and isolated live API validation pass; Marketplace review and hosted Dify testing pending |
 | n8n | [n8n/](n8n/) | Inbox operations, send/reply/read/search, signed email-event webhook trigger | Real n8n 2.46.6 server QA passes; npm publication, visual editor checks and community-node verification pending |
 | Zapier | [zapier/](zapier/) | Instant inbound-email trigger, inbox trigger, email actions and search | [Invite-only preview](zapier/USER_GUIDE.md); hosted send/read/search/reply and same-key retries pass on 1.0.1; directory review pending |
 | Make | [make/](make/) | Custom-app connection and eight modules for inboxes and email | Updated source and contract checks pass; hosted update, scenario verification and publication pending |
@@ -25,6 +26,6 @@ Use dedicated test accounts for connector validation. Sending and replying deliv
 
 ## Development
 
-The n8n, Zapier, and Activepieces packages use independent npm lockfiles and mocked HTTP tests. Make provides a dependency-free API-contract check. Nango's provider contribution is validated against its upstream schema. See each directory for exact commands.
+Dify uses Python 3.12, the official SDK/CLI, mocked HTTP tests and an explicit runtime packaging allowlist. The n8n, Zapier, and Activepieces packages use independent npm lockfiles and mocked HTTP tests. Make provides a dependency-free API-contract check. Nango's provider contribution is validated against its upstream schema. See each directory for exact commands.
 
 Copyright 2026 Brightboard AI Ltd. Connector source is MIT licensed; SentFromAI branding remains the property of its owner. Platform names are trademarks of their respective owners.
