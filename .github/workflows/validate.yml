@@ -9,6 +9,33 @@ permissions:
   contents: read
 
 jobs:
+  dify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dify
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: dify/requirements*.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+      - name: Download verified official Dify CLI
+        run: |
+          curl --fail --location --proto '=https' --tlsv1.2 --output /tmp/dify https://github.com/langgenius/dify-plugin-daemon/releases/download/0.6.15/dify-plugin-linux-amd64
+          echo 'd0a1e3b25bd6c5f6cd749cad2cf04817ea808344e6cc07a2c49bb0108019ab93  /tmp/dify' | sha256sum --check
+          chmod +x /tmp/dify
+      - run: python scripts/package.py --cli /tmp/dify
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dify-plugin
+          if-no-files-found: error
+          path: |
+            dify/build/*.difypkg
+            dify/build/SHA256SUMS
   n8n:
     runs-on: ubuntu-latest
     defaults:
